@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  speech_to_text:
+  speech_to_text: ^6.3.0
   video_player:
   flutter_vision:
   camera:
@@ -42,7 +42,6 @@ dependencies:
   vibration:
   http:
   better_player: 
-  flutter_webrtc:
   flutter_tts: ^3.8.5
 
   # The following adds the Cupertino Icons font to your application.
@@ -76,6 +75,16 @@ flutter:
     - assets/avt.avif
     - assets/main_avt.png
     - assets/connect_avt.jpeg
+    - assets/video/are_you_happy.mp4
+    - assets/video/i_drink.mp4
+    - assets/video/i_eat_food.mp4
+    - assets/video/i_like_biscuit.mp4
+    - assets/video/i_like_sleep.mp4
+    - assets/video/ok.mp4
+    - assets/video/sorry.mp4
+    - assets/video/thanks.mp4
+    - assets/video/what_are_you_do.mp4
+    - assets/video/what_do_you_like.mp4
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

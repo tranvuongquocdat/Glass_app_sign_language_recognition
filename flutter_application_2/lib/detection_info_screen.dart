@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/services.dart'; // Import the services package for HapticFeedback
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetectionInfoScreen extends StatefulWidget {
   final String ip;
@@ -26,7 +27,20 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
   @override
   void initState() {
     super.initState();
+    _loadTtsState();
     _connectToServer();
+  }
+
+  Future<void> _loadTtsState() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isTtsEnabled = prefs.getBool('isTtsEnabled') ?? false;
+    });
+  }
+
+  Future<void> _saveTtsState() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isTtsEnabled', _isTtsEnabled);
   }
 
   Future<void> _connectToServer() async {
@@ -95,8 +109,7 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            HapticFeedback
-                .lightImpact(); // Provide haptic feedback for back button
+            HapticFeedback.lightImpact();
             Navigator.of(context).pop();
           },
         ),
@@ -111,9 +124,8 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
         child: Column(
           children: [
             const Spacer(),
-            // Adding the image section at the top
             Image.asset(
-              'assets/avt.avif', // Make sure to add your image in the assets folder and update pubspec.yaml accordingly
+              'assets/avt.avif',
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
@@ -170,6 +182,7 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
           onChanged: (bool value) {
             setState(() {
               _isTtsEnabled = value;
+              _saveTtsState();
             });
           },
         ),

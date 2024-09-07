@@ -21,8 +21,17 @@ class _SpeechToTextPageState extends State<SpeechToTextPage>
   final Map<String, String> _videoMap = {
     'nice to meet you': 'assets/vid1.mp4',
     'i have lunch': 'assets/vid2.mp4',
-    'goodbye': 'assets/vid3.mp4'
-    // Add more phrases and corresponding video paths here
+    'goodbye': 'assets/vid3.mp4',
+    'are you happy': 'assets/video/are_you_happy.mp4',
+    'i drink': 'assets/video/i_drink.mp4',
+    'i am eating cake': 'assets/video/i_eat_food.mp4',
+    'i like biscuit': 'assets/video/i_like_biscuit.mp4',
+    'i like sleep': 'assets/video/i_like_sleep.mp4',
+    'i am fine': 'assets/video/ok.mp4',
+    'sorry': 'assets/video/sorry.mp4',
+    'thank you': 'assets/video/thanks.mp4',
+    'what are you doing': 'assets/video/what_are_you_do.mp4',
+    'what do you like': 'assets/video/what_do_you_like.mp4',
   };
 
   @override
@@ -39,10 +48,19 @@ class _SpeechToTextPageState extends State<SpeechToTextPage>
   }
 
   void _initializeSpeech() async {
-    await _speech.initialize(
+    bool available = await _speech.initialize(
       onStatus: (val) => print('onStatus: $val'),
       onError: (val) => print('onError: $val'),
     );
+
+    if (available) {
+      List<stt.LocaleName> locales = await _speech.locales();
+      locales.forEach((locale) {
+        print('Supported language: ${locale.localeId}');
+      });
+    } else {
+      print('Speech recognition not available');
+    }
   }
 
   Future<void> _initializeVideoPlayer(String videoPath) async {
@@ -81,6 +99,7 @@ class _SpeechToTextPageState extends State<SpeechToTextPage>
           _animationController.repeat(reverse: true);
         });
         _speech.listen(
+          localeId: 'en-US', // Specify a supported language here
           onResult: (val) => setState(() {
             _text = val.recognizedWords.toLowerCase();
             _videoMap.forEach((phrase, videoPath) {
@@ -206,7 +225,7 @@ class _SpeechToTextPageState extends State<SpeechToTextPage>
                             highlightElevation: 15.0,
                             tooltip: 'Hold to speak',
                             child: Icon(
-                              _isListening ? Icons.mic_off : Icons.mic,
+                              _isListening ? Icons.stop : Icons.mic,
                               size: 40, // Increase the size of the icon
                             ),
                           ),

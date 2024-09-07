@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Add this import
+import 'package:flutter/services.dart';
 import 'ip_input_screen.dart';
 import 'speech_to_text_page.dart';
 import 'about_us_page.dart';
+import 'chat_ip_input_screen.dart'; // Thêm import này
 import 'direct_connect_screen.dart';
 
 void main() => runApp(const MyApp());
@@ -59,7 +60,7 @@ class HomePage extends StatelessWidget {
             CustomButton(
               label: 'Sign Language Recognition',
               onPressed: () {
-                HapticFeedback.lightImpact(); // Add this line
+                HapticFeedback.lightImpact();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -72,7 +73,7 @@ class HomePage extends StatelessWidget {
             CustomButton(
               label: 'Directly Connect to Ras',
               onPressed: () {
-                HapticFeedback.lightImpact(); // Add this line
+                HapticFeedback.lightImpact();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -85,7 +86,7 @@ class HomePage extends StatelessWidget {
             CustomButton(
               label: 'Speech to Video',
               onPressed: () {
-                HapticFeedback.lightImpact(); // Add this line
+                HapticFeedback.lightImpact();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -96,9 +97,23 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             CustomButton(
+              label: 'Chat',
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const ChatIPInputScreen(), // Sử dụng màn hình nhập IP mới
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            CustomButton(
               label: 'About Us',
               onPressed: () {
-                HapticFeedback.lightImpact(); // Add this line
+                HapticFeedback.lightImpact();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -123,12 +138,12 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80, // Adjust the height as needed
+      height: 80,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16), // Rounded corners
+            borderRadius: BorderRadius.circular(16),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           textStyle: const TextStyle(fontSize: 18),
