@@ -11,7 +11,7 @@ import 'package:video_player/video_player.dart';
 class ChatScreen extends StatefulWidget {
   final String ip;
 
-  const ChatScreen({Key? key, required this.ip}) : super(key: key);
+  const ChatScreen({super.key, required this.ip});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -30,8 +30,9 @@ class _ChatScreenState extends State<ChatScreen>
   bool _isListening = false;
   String _text = '';
   late AnimationController _animationController;
-  late VideoPlayerController _videoController;
+  VideoPlayerController? _videoController;
   bool _isPlayingVideo = false;
+  String? _currentVideoPath;
   final Map<String, String> _videoMap = {
     'nice to meet you': 'assets/vid1.mp4',
     'i have lunch': 'assets/vid2.mp4',
@@ -93,10 +94,13 @@ class _ChatScreenState extends State<ChatScreen>
 
   void _addMessage(String text, bool isUser) {
     setState(() {
-      _messages.add({
-        'text': text,
-        'isUser': isUser,
-      });
+      if (_messages.isEmpty || _messages.last['text'] != text) {
+        // Only add the message if it's not a duplicate
+        _messages.add({
+          'text': text,
+          'isUser': isUser,
+        });
+      }
       if (_isTtsEnabled && !isUser) {
         _speak(text);
       }
@@ -118,15 +122,17 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   Future<void> _initializeVideoPlayer(String videoPath) async {
+    _videoController?.dispose(); // Dispose the previous controller if any
     _videoController = VideoPlayerController.asset(videoPath);
     try {
-      await _videoController.initialize();
-      _videoController.addListener(() {
-        if (_videoController.value.position ==
-            _videoController.value.duration) {
+      await _videoController!.initialize();
+      _videoController!.addListener(() {
+        if (_videoController!.value.position ==
+            _videoController!.value.duration) {
           setState(() {
             _isPlayingVideo = false;
-            _text = '';
+            _videoController!.pause(); // Pause at the end of the video
+            _videoController!.seekTo(Duration.zero); // Reset to the start
           });
         }
       });
@@ -184,11 +190,11 @@ class _ChatScreenState extends State<ChatScreen>
   void _playVideo(String videoPath) {
     setState(() {
       _isPlayingVideo = true;
+      _currentVideoPath = videoPath; // Store the current video path
     });
     _initializeVideoPlayer(videoPath).then((_) {
-      if (!_videoController.value.isPlaying) {
-        _videoController.play();
-        _videoController.setLooping(false);
+      if (_videoController != null && !_videoController!.value.isPlaying) {
+        _videoController!.play();
       }
     });
   }
@@ -210,7 +216,7 @@ class _ChatScreenState extends State<ChatScreen>
     _socket.close();
     _flutterTts.stop();
     _animationController.dispose();
-    _videoController.dispose();
+    _videoController?.dispose();
     super.dispose();
   }
 
@@ -218,21 +224,21 @@ class _ChatScreenState extends State<ChatScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SPECS Chatbox'),
+        title: const Text('SPECS Chatbox'),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Settings'),
+                    title: const Text('Settings'),
                     content: StatefulBuilder(
                       builder: (BuildContext context, StateSetter setState) {
                         return Row(
                           children: [
-                            Expanded(child: Text('Enable Text-to-Speech')),
+                            const Expanded(child: Text('Enable Text-to-Speech')),
                             Switch(
                               value: _isTtsEnabled,
                               onChanged: (bool value) {
@@ -251,7 +257,7 @@ class _ChatScreenState extends State<ChatScreen>
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text('OK'),
+                        child: const Text('OK'),
                       ),
                     ],
                   );
@@ -260,7 +266,7 @@ class _ChatScreenState extends State<ChatScreen>
             },
           ),
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: () {
               setState(() {});
             },
@@ -275,27 +281,59 @@ class _ChatScreenState extends State<ChatScreen>
           ),
           Expanded(
             child: ListView.builder(
-              reverse: true,
+              reverse: false, // Sắp xếp tin nhắn từ trên xuống
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                return ListTile(
-                  title: Align(
-                    alignment: message['isUser']
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                      decoration: BoxDecoration(
-                        color: message['isUser'] ? Colors.blue : Colors.grey,
-                        borderRadius: BorderRadius.circular(8),
+                final videoPath = _videoMap[
+                    message['text']]; // Kiểm tra video trong danh sách
+                return Align(
+                  alignment: message['isUser']
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: message['isUser']
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                        decoration: BoxDecoration(
+                          color: message['isUser'] ? Colors.blue : Colors.grey,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          message['text'],
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
-                      child: Text(
-                        message['text'],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
+                      // Hiển thị video nếu có video path
+                      if (videoPath != null && message['text'] == _text)
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 10),
+                          width: MediaQuery.of(context).size.width *
+                              0.4, // 40% màn hình
+                          height: MediaQuery.of(context).size.width *
+                              0.4, // Tỉ lệ 1:1
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: GestureDetector(
+                              onTap: () {
+                                _videoController!.seekTo(Duration.zero);
+                                _videoController!.play();
+                              },
+                              child: AspectRatio(
+                                aspectRatio: 1, // Crop to 1:1
+                                child: VideoPlayer(_videoController!),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 );
               },

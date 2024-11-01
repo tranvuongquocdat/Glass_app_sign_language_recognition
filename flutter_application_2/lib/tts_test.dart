@@ -6,6 +6,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,6 +21,8 @@ class MyApp extends StatelessWidget {
 }
 
 class TextToSpeechScreen extends StatefulWidget {
+  const TextToSpeechScreen({super.key});
+
   @override
   _TextToSpeechScreenState createState() => _TextToSpeechScreenState();
 }
@@ -31,7 +35,7 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter Text to Speech'),
+        title: const Text('Flutter Text to Speech'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -39,16 +43,16 @@ class _TextToSpeechScreenState extends State<TextToSpeechScreen> {
           children: [
             TextField(
               controller: textController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Enter text to speak',
               ),
               maxLines: null,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _speak,
-              child: Text('Speak'),
+              child: const Text('Speak'),
             ),
           ],
         ),

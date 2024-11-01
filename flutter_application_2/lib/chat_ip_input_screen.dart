@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'chat_screen.dart';
 
 class ChatIPInputScreen extends StatefulWidget {
-  const ChatIPInputScreen({Key? key}) : super(key: key);
+  const ChatIPInputScreen({super.key});
 
   @override
   _ChatIPInputScreenState createState() => _ChatIPInputScreenState();

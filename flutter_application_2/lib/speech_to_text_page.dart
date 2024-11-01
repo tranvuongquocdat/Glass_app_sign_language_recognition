@@ -55,9 +55,9 @@ class _SpeechToTextPageState extends State<SpeechToTextPage>
 
     if (available) {
       List<stt.LocaleName> locales = await _speech.locales();
-      locales.forEach((locale) {
+      for (var locale in locales) {
         print('Supported language: ${locale.localeId}');
-      });
+      }
     } else {
       print('Speech recognition not available');
     }
