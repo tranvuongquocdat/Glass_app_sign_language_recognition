@@ -24,6 +24,7 @@ class _ChatScreenState extends State<ChatScreen>
   bool _isTtsEnabled = false;
   late Socket _socket;
   String _fps = "0.00";
+  String _selectedLanguage = "VI"; // Thêm biến lưu ngôn ngữ đã chọn
 
   // Speech to Text Variables
   late stt.SpeechToText _speech;
@@ -55,11 +56,31 @@ class _ChatScreenState extends State<ChatScreen>
     _connectToServer();
     _initializeSpeech();
     _loadTtsState();
+    _loadLanguageSelection(); // Tải ngôn ngữ đã chọn khi khởi động
+  }
+
+  Future<void> _loadLanguageSelection() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedLanguage = prefs.getString('selectedLanguage') ?? "VI";
+    });
+  }
+
+  Future<void> _saveLanguageSelection() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('selectedLanguage', _selectedLanguage);
+  }
+
+  void _sendLanguageSelection() {
+    if (_socket != null) {
+      _socket.write(_selectedLanguage); // Gửi lựa chọn ngôn ngữ ("EN" hoặc "VI")
+    }
   }
 
   Future<void> _connectToServer() async {
     try {
       _socket = await Socket.connect(widget.ip, 8001);
+      _sendLanguageSelection(); // Gửi ngôn ngữ đã chọn ngay khi kết nối
       _socket.listen(
         (Uint8List data) {
           _processData(data);
@@ -95,7 +116,6 @@ class _ChatScreenState extends State<ChatScreen>
   void _addMessage(String text, bool isUser) {
     setState(() {
       if (_messages.isEmpty || _messages.last['text'] != text) {
-        // Only add the message if it's not a duplicate
         _messages.add({
           'text': text,
           'isUser': isUser,
@@ -115,24 +135,23 @@ class _ChatScreenState extends State<ChatScreen>
     _speech = stt.SpeechToText();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1), // Slow down the animation
+      duration: const Duration(seconds: 1),
       lowerBound: 0.7,
       upperBound: 1.05,
     );
   }
 
   Future<void> _initializeVideoPlayer(String videoPath) async {
-    _videoController?.dispose(); // Dispose the previous controller if any
+    _videoController?.dispose();
     _videoController = VideoPlayerController.asset(videoPath);
     try {
       await _videoController!.initialize();
       _videoController!.addListener(() {
-        if (_videoController!.value.position ==
-            _videoController!.value.duration) {
+        if (_videoController!.value.position == _videoController!.value.duration) {
           setState(() {
             _isPlayingVideo = false;
-            _videoController!.pause(); // Pause at the end of the video
-            _videoController!.seekTo(Duration.zero); // Reset to the start
+            _videoController!.pause();
+            _videoController!.seekTo(Duration.zero);
           });
         }
       });
@@ -152,13 +171,13 @@ class _ChatScreenState extends State<ChatScreen>
           _animationController.repeat(reverse: true);
         });
         _speech.listen(
-          localeId: 'en-US', // Specify a supported language here
+          localeId: 'en-US',
           onResult: (val) => setState(() {
             _text = val.recognizedWords.toLowerCase();
             _videoMap.forEach((phrase, videoPath) {
               if (_text.contains(phrase)) {
                 _playVideo(videoPath);
-                _addMessage(_text, true); // Add recognized text as a message
+                _addMessage(_text, true);
               }
             });
             if (!_isPlayingVideo) {
@@ -190,7 +209,7 @@ class _ChatScreenState extends State<ChatScreen>
   void _playVideo(String videoPath) {
     setState(() {
       _isPlayingVideo = true;
-      _currentVideoPath = videoPath; // Store the current video path
+      _currentVideoPath = videoPath;
     });
     _initializeVideoPlayer(videoPath).then((_) {
       if (_videoController != null && !_videoController!.value.isPlaying) {
@@ -236,17 +255,41 @@ class _ChatScreenState extends State<ChatScreen>
                     title: const Text('Settings'),
                     content: StatefulBuilder(
                       builder: (BuildContext context, StateSetter setState) {
-                        return Row(
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Expanded(child: Text('Enable Text-to-Speech')),
-                            Switch(
-                              value: _isTtsEnabled,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  _isTtsEnabled = value;
-                                });
-                                _saveTtsState();
-                              },
+                            Row(
+                              children: [
+                                const Expanded(child: Text('Enable Text-to-Speech')),
+                                Switch(
+                                  value: _isTtsEnabled,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      _isTtsEnabled = value;
+                                    });
+                                    _saveTtsState();
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Expanded(child: Text('Select Language')),
+                                DropdownButton<String>(
+                                  value: _selectedLanguage,
+                                  items: const [
+                                    DropdownMenuItem(value: "EN", child: Text("English")),
+                                    DropdownMenuItem(value: "VI", child: Text("Vietnamese")),
+                                  ],
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      _selectedLanguage = value!;
+                                    });
+                                    _saveLanguageSelection();
+                                    _sendLanguageSelection(); // Gửi lại lựa chọn ngôn ngữ khi thay đổi
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         );
@@ -281,12 +324,11 @@ class _ChatScreenState extends State<ChatScreen>
           ),
           Expanded(
             child: ListView.builder(
-              reverse: false, // Sắp xếp tin nhắn từ trên xuống
+              reverse: false,
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                final videoPath = _videoMap[
-                    message['text']]; // Kiểm tra video trong danh sách
+                final videoPath = _videoMap[message['text']];
                 return Align(
                   alignment: message['isUser']
                       ? Alignment.centerRight
@@ -310,15 +352,12 @@ class _ChatScreenState extends State<ChatScreen>
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      // Hiển thị video nếu có video path
                       if (videoPath != null && message['text'] == _text)
                         Container(
                           margin: const EdgeInsets.symmetric(
                               vertical: 5, horizontal: 10),
-                          width: MediaQuery.of(context).size.width *
-                              0.4, // 40% màn hình
-                          height: MediaQuery.of(context).size.width *
-                              0.4, // Tỉ lệ 1:1
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          height: MediaQuery.of(context).size.width * 0.4,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: GestureDetector(
@@ -327,7 +366,7 @@ class _ChatScreenState extends State<ChatScreen>
                                 _videoController!.play();
                               },
                               child: AspectRatio(
-                                aspectRatio: 1, // Crop to 1:1
+                                aspectRatio: 1,
                                 child: VideoPlayer(_videoController!),
                               ),
                             ),
@@ -353,14 +392,13 @@ class _ChatScreenState extends State<ChatScreen>
                     height: 80,
                     child: FloatingActionButton(
                       onPressed: _listen,
-                      backgroundColor: const Color.fromARGB(
-                          255, 182, 245, 255), // Pastel color
+                      backgroundColor: const Color.fromARGB(255, 182, 245, 255),
                       elevation: 10.0,
                       highlightElevation: 15.0,
                       tooltip: 'Hold to speak',
                       child: Icon(
                         _isListening ? Icons.stop : Icons.mic,
-                        size: 40, // Increase the size of the icon
+                        size: 40,
                       ),
                     ),
                   ),

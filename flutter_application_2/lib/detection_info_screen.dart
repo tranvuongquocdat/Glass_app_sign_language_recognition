@@ -23,18 +23,20 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
   bool _isTtsEnabled = false;
   final FlutterTts _flutterTts = FlutterTts();
   bool _isSpeaking = false;
+  String _selectedLanguage = "EN"; // Default language
 
   @override
   void initState() {
     super.initState();
-    _loadTtsState();
+    _loadSettings();
     _connectToServer();
   }
 
-  Future<void> _loadTtsState() async {
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isTtsEnabled = prefs.getBool('isTtsEnabled') ?? false;
+      _selectedLanguage = prefs.getString('selectedLanguage') ?? "EN";
     });
   }
 
@@ -43,9 +45,15 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
     await prefs.setBool('isTtsEnabled', _isTtsEnabled);
   }
 
+  Future<void> _saveLanguageSelection() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedLanguage', _selectedLanguage);
+  }
+
   Future<void> _connectToServer() async {
     try {
       _socket = await Socket.connect(widget.ip, 8001);
+      _sendLanguageSelection(); // Gửi ngôn ngữ đã chọn ngay khi kết nối
       _socket.listen(
         (Uint8List data) {
           _processData(data);
@@ -62,6 +70,10 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
     } catch (e) {
       print("Failed to connect: $e");
     }
+  }
+
+  void _sendLanguageSelection() {
+    _socket.write(_selectedLanguage); // Gửi lựa chọn ngôn ngữ ("EN" hoặc "VI")
   }
 
   void _processData(Uint8List data) {
@@ -136,6 +148,8 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
             _buildInfoBox("Detected", _detectedText),
             const SizedBox(height: 20),
             _buildTtsSwitch(),
+            const SizedBox(height: 20),
+            _buildLanguageSelector(), // Thêm lựa chọn ngôn ngữ
             const Spacer(),
           ],
         ),
@@ -183,6 +197,32 @@ class DetectionInfoScreenState extends State<DetectionInfoScreen> {
             setState(() {
               _isTtsEnabled = value;
               _saveTtsState();
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLanguageSelector() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Select Language',
+          style: TextStyle(fontSize: 18),
+        ),
+        DropdownButton<String>(
+          value: _selectedLanguage,
+          items: const [
+            DropdownMenuItem(value: "EN", child: Text("English")),
+            DropdownMenuItem(value: "VI", child: Text("Vietnamese")),
+          ],
+          onChanged: (String? value) {
+            setState(() {
+              _selectedLanguage = value!;
+              _saveLanguageSelection();
+              _sendLanguageSelection(); // Gửi lại lựa chọn ngôn ngữ khi thay đổi
             });
           },
         ),
