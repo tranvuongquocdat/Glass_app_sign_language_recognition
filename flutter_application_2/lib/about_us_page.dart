@@ -42,13 +42,19 @@ class AboutUsPage extends StatelessWidget {
               'Organization:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text('Demo Organization'),
+            Text('THPT Nguyen Tat Thanh'),
             SizedBox(height: 20),
             Text(
               'Version:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text('1.0.0'),
+            Text('2.4.0'),
+            SizedBox(height: 20),
+            Text(
+              'Director:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text('Tran Vuong Quoc Dat'),
             SizedBox(height: 20),
             Text(
               'Description:',
