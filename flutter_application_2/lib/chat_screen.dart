@@ -24,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen>
   bool _isTtsEnabled = false;
   late Socket _socket;
   String _fps = "0.00";
-  String _selectedLanguage = "VI"; // Thêm biến lưu ngôn ngữ đã chọn
+  String _selectedLanguage = "VI"; // Default language is Vietnamese
 
   // Speech to Text Variables
   late stt.SpeechToText _speech;
@@ -34,21 +34,51 @@ class _ChatScreenState extends State<ChatScreen>
   VideoPlayerController? _videoController;
   bool _isPlayingVideo = false;
   String? _currentVideoPath;
-  final Map<String, String> _videoMap = {
-    'nice to meet you': 'assets/vid1.mp4',
-    'i have lunch': 'assets/vid2.mp4',
-    'goodbye': 'assets/vid3.mp4',
-    'are you happy': 'assets/video/are_you_happy.mp4',
-    'i drink': 'assets/video/i_drink.mp4',
-    'i am eating cake': 'assets/video/i_eat_food.mp4',
-    'i like biscuit': 'assets/video/i_like_biscuit.mp4',
-    'i like sleep': 'assets/video/i_like_sleep.mp4',
-    'i am fine': 'assets/video/ok.mp4',
-    'sorry': 'assets/video/sorry.mp4',
-    'thank you': 'assets/video/thanks.mp4',
-    'what are you doing': 'assets/video/what_are_you_do.mp4',
-    'what do you like': 'assets/video/what_do_you_like.mp4',
-  };
+
+  // Video map for English and Vietnamese phrases
+final Map<String, String> _videoMap = {
+  // English Sentences
+  'bread': 'assets/english_sentences/bread.mp4',
+  'cereals': 'assets/english_sentences/cereals.mp4',
+  'french fried': 'assets/english_sentences/french_fried.mp4',
+  'goodbye': 'assets/english_sentences/goodbye.mp4',
+  'hello': 'assets/english_sentences/hello.mp4',
+  'how are you': 'assets/english_sentences/how_are_you.mp4',
+  'how old are you': 'assets/english_sentences/how_old_are_you.mp4',
+  'hungry': 'assets/english_sentences/hungry.mp4',
+  'i am fine': 'assets/english_sentences/i_am_fine.mp4',
+  'nice to meet you': 'assets/english_sentences/nice_to_meet_you.mp4',
+  'sleepy': 'assets/english_sentences/sleepy.mp4',
+  'sorry': 'assets/english_sentences/sorry.mp4',
+  'student': 'assets/english_sentences/student.mp4',
+  'teacher': 'assets/english_sentences/teacher.mp4',
+  'thank you': 'assets/english_sentences/thankyou.mp4',
+  'thirsty': 'assets/english_sentences/thirsty.mp4',
+  'tired': 'assets/english_sentences/tired.mp4',
+  'what do you like to eat': 'assets/english_sentences/what_do_you_like_to_eat.mp4',
+  'what do you work': 'assets/english_sentences/what_do_you_work.mp4',
+  'what is your name': 'assets/english_sentences/what_is_your_name.mp4',
+
+  // Vietnamese Sentences
+  'bác sĩ': 'assets/vietnamese_sentences/bac_si.mp4',
+  'bạn bao nhiêu tuổi': 'assets/vietnamese_sentences/ban_bao_nhieu_tuoi.mp4',
+  'bạn khỏe không': 'assets/vietnamese_sentences/ban_khoe_khong.mp4',
+  'bạn làm nghề gì': 'assets/vietnamese_sentences/ban_lam_nghe_gi.mp4',
+  'bạn thích ăn gì': 'assets/vietnamese_sentences/ban_thich_an_gi.mp4',
+  'bánh mì': 'assets/vietnamese_sentences/banh_mi.mp4',
+  'bún': 'assets/vietnamese_sentences/bun.mp4',
+  'cảm ơn': 'assets/vietnamese_sentences/cam_on.mp4',
+  'cô giáo': 'assets/vietnamese_sentences/co_giao.mp4',
+  'công nhân': 'assets/vietnamese_sentences/cong_nhan.mp4',
+  'rất vui được gặp bạn': 'assets/vietnamese_sentences/rat_vui_duoc_gap_ban.mp4',
+  'tạm biệt': 'assets/vietnamese_sentences/tam_biet.mp4',
+  'tôi khát': 'assets/vietnamese_sentences/toi_khat.mp4',
+  'tôi khỏe': 'assets/vietnamese_sentences/toi_khoe.mp4',
+  'tôi mệt': 'assets/vietnamese_sentences/toi_met.mp4',
+  'xin chào': 'assets/vietnamese_sentences/xin_chao.mp4',
+  'xin lỗi': 'assets/vietnamese_sentences/xin_loi.mp4',
+};
+
 
   @override
   void initState() {
@@ -56,7 +86,7 @@ class _ChatScreenState extends State<ChatScreen>
     _connectToServer();
     _initializeSpeech();
     _loadTtsState();
-    _loadLanguageSelection(); // Tải ngôn ngữ đã chọn khi khởi động
+    _loadLanguageSelection(); // Load saved language
   }
 
   Future<void> _loadLanguageSelection() async {
@@ -73,14 +103,14 @@ class _ChatScreenState extends State<ChatScreen>
 
   void _sendLanguageSelection() {
     if (_socket != null) {
-      _socket.write(_selectedLanguage); // Gửi lựa chọn ngôn ngữ ("EN" hoặc "VI")
+      _socket.write(_selectedLanguage); // Send selected language to server
     }
   }
 
   Future<void> _connectToServer() async {
     try {
       _socket = await Socket.connect(widget.ip, 8001);
-      _sendLanguageSelection(); // Gửi ngôn ngữ đã chọn ngay khi kết nối
+      _sendLanguageSelection(); // Send language selection on connect
       _socket.listen(
         (Uint8List data) {
           _processData(data);
@@ -162,49 +192,67 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   void _listen() async {
-    HapticFeedback.mediumImpact();
-    if (!_isListening) {
-      bool available = await _speech.initialize();
-      if (available) {
-        setState(() {
-          _isListening = true;
-          _animationController.repeat(reverse: true);
-        });
-        _speech.listen(
-          localeId: 'en-US',
-          onResult: (val) => setState(() {
+  HapticFeedback.mediumImpact();
+  if (!_isListening) {
+    bool available = await _speech.initialize();
+    if (available) {
+      setState(() {
+        _isListening = true;
+        _animationController.repeat(reverse: true);
+      });
+
+      // Set localeId based on the selected language
+      String localeId = _selectedLanguage == 'EN' ? 'en-US' : 'vi-VN';
+
+      _speech.listen(
+        localeId: localeId,
+        onResult: (val) {
+          setState(() {
+            // Update _text with interim results, but do not process them
             _text = val.recognizedWords.toLowerCase();
-            _videoMap.forEach((phrase, videoPath) {
-              if (_text.contains(phrase)) {
-                _playVideo(videoPath);
-                _addMessage(_text, true);
-              }
-            });
-            if (!_isPlayingVideo) {
-              Future.delayed(const Duration(seconds: 3), () {
-                setState(() {
-                  _text = '';
-                });
-              });
-            }
-          }),
-        );
-      } else {
-        setState(() {
-          _isListening = false;
-          _animationController.stop();
-        });
-        _speech.stop();
-      }
+          });
+        },
+        listenMode: stt.ListenMode.confirmation,
+      );
     } else {
       setState(() {
         _isListening = false;
         _animationController.stop();
       });
-      _speech.stop();
-      HapticFeedback.mediumImpact();
+    }
+  } else {
+    // Stop listening and process the final result
+    setState(() {
+      _isListening = false;
+      _animationController.stop();
+    });
+
+    _speech.stop();
+
+    if (_text.isNotEmpty) {
+      bool videoPlayed = false;
+
+      // Match phrase in _videoMap
+      _videoMap.forEach((phrase, videoPath) {
+        if (_text.contains(phrase)) {
+          _playVideo(videoPath);
+          videoPlayed = true;
+          _addMessage(_text, true);
+        }
+      });
+
+      // If no video is played, add the speech input as a user message
+      if (!videoPlayed) {
+        _addMessage(_text, true); // Add recognized phrase as a user message
+      }
+
+      // Clear recognized text
+      setState(() {
+        _text = '';
+      });
     }
   }
+}
 
   void _playVideo(String videoPath) {
     setState(() {
@@ -243,7 +291,9 @@ class _ChatScreenState extends State<ChatScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SPECS Chatbox'),
+        title: Text(
+          'SPECS Chatbox (${_selectedLanguage == "EN" ? "English" : "Vietnamese"})',
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -286,7 +336,7 @@ class _ChatScreenState extends State<ChatScreen>
                                       _selectedLanguage = value!;
                                     });
                                     _saveLanguageSelection();
-                                    _sendLanguageSelection(); // Gửi lại lựa chọn ngôn ngữ khi thay đổi
+                                    _sendLanguageSelection();
                                   },
                                 ),
                               ],
@@ -308,12 +358,6 @@ class _ChatScreenState extends State<ChatScreen>
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {});
-            },
-          ),
         ],
       ),
       body: Column(
@@ -324,60 +368,39 @@ class _ChatScreenState extends State<ChatScreen>
           ),
           Expanded(
             child: ListView.builder(
-              reverse: false,
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                final videoPath = _videoMap[message['text']];
+                final isUser = message['isUser'];
                 return Align(
-                  alignment: message['isUser']
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: message['isUser']
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 10),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                        decoration: BoxDecoration(
-                          color: message['isUser'] ? Colors.blue : Colors.grey,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          message['text'],
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      if (videoPath != null && message['text'] == _text)
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 10),
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          height: MediaQuery.of(context).size.width * 0.4,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: GestureDetector(
-                              onTap: () {
-                                _videoController!.seekTo(Duration.zero);
-                                _videoController!.play();
-                              },
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: VideoPlayer(_videoController!),
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+                  alignment:
+                      isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 5, horizontal: 10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isUser ? Colors.blue : Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      message['text'],
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 );
               },
             ),
           ),
+          if (_isPlayingVideo && _videoController != null)
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              height: 200,
+              child: AspectRatio(
+                aspectRatio: _videoController!.value.aspectRatio,
+                child: VideoPlayer(_videoController!),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -387,19 +410,12 @@ class _ChatScreenState extends State<ChatScreen>
                   scale: _isListening
                       ? _animationController
                       : const AlwaysStoppedAnimation(1.0),
-                  child: SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: FloatingActionButton(
-                      onPressed: _listen,
-                      backgroundColor: const Color.fromARGB(255, 182, 245, 255),
-                      elevation: 10.0,
-                      highlightElevation: 15.0,
-                      tooltip: 'Hold to speak',
-                      child: Icon(
-                        _isListening ? Icons.stop : Icons.mic,
-                        size: 40,
-                      ),
+                  child: FloatingActionButton(
+                    onPressed: _listen,
+                    backgroundColor: const Color.fromARGB(255, 34, 219, 213),
+                    child: Icon(
+                      _isListening ? Icons.stop : Icons.mic,
+                      size: 30,
                     ),
                   ),
                 ),

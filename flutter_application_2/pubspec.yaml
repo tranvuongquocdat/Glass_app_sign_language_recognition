@@ -65,9 +65,6 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/vid1.mp4
-    - assets/vid2.mp4
-    - assets/vid3.mp4
     - assets/yolov8n_float16.tflite
     - assets/yolov8n_float32.tflite
     - assets/label.txt
@@ -75,16 +72,8 @@ flutter:
     - assets/avt.avif
     - assets/main_avt.png
     - assets/connect_avt.jpeg
-    - assets/video/are_you_happy.mp4
-    - assets/video/i_drink.mp4
-    - assets/video/i_eat_food.mp4
-    - assets/video/i_like_biscuit.mp4
-    - assets/video/i_like_sleep.mp4
-    - assets/video/ok.mp4
-    - assets/video/sorry.mp4
-    - assets/video/thanks.mp4
-    - assets/video/what_are_you_do.mp4
-    - assets/video/what_do_you_like.mp4
+    - assets/english_sentences/
+    - assets/vietnamese_sentences/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

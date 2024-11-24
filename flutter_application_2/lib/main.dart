@@ -37,92 +37,94 @@ class HomePage extends StatelessWidget {
         ),
         elevation: 10,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Image.asset(
-                'assets/main_avt.png', // Make sure to add your image in the assets folder and update pubspec.yaml accordingly
-                width: double.infinity,
-                height: 200,
-                fit: BoxFit.cover,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(
+                height: 20,
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomButton(
-              label: 'Sign Language Recognition',
-              onPressed: () {
-                HapticFeedback.lightImpact();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const IPInputScreen(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            CustomButton(
-              label: 'Directly Connect to Ras',
-              onPressed: () {
-                HapticFeedback.lightImpact();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const DirectConnectScreen(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            CustomButton(
-              label: 'Speech to Video',
-              onPressed: () {
-                HapticFeedback.lightImpact();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SpeechToTextPage(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            CustomButton(
-              label: 'Chat',
-              onPressed: () {
-                HapticFeedback.lightImpact();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const ChatIPInputScreen(), // Sử dụng màn hình nhập IP mới
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            CustomButton(
-              label: 'About Us',
-              onPressed: () {
-                HapticFeedback.lightImpact();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AboutUsPage(),
-                  ),
-                );
-              },
-            ),
-          ],
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: Image.asset(
+                  'assets/main_avt.png', // Make sure to add your image in the assets folder and update pubspec.yaml accordingly
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomButton(
+                label: 'Sign Language Recognition',
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const IPInputScreen(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              CustomButton(
+                label: 'Directly Connect to Ras',
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DirectConnectScreen(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              CustomButton(
+                label: 'Speech to Video',
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SpeechToTextPage(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              CustomButton(
+                label: 'Chat',
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const ChatIPInputScreen(), // Sử dụng màn hình nhập IP mới
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              CustomButton(
+                label: 'About Us',
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AboutUsPage(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
