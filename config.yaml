@@ -1,0 +1,18 @@
+server:
+  host: "0.0.0.0"
+  port: 8001
+
+raspberry_pi:
+  ip: "172.20.10.13"
+  port: 8000
+
+paths:
+  yolo_model: "models/main_model_v2.pt"
+  font: "Disney.ttf"
+
+parameters:
+  max_empty_hand_frame: 90
+  max_num_detected_lst: 5
+  sliding_window_size: 12
+  confidence_threshold: 0.6
+  fps_display_color: [153, 255, 204]
