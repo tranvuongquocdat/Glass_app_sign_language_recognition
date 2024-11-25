@@ -44,7 +44,13 @@ def process_vietnamese_text_with_resources(text: str):
         {"role": "system", "content": "Bạn là một bot kiểm tra chính tả và ngữ pháp tiếng Việt."},
         {
             "role": "user",
-            "content": f"Kiểm tra chính tả, dấu câu và ngữ pháp của đoạn văn sau: '{text}'. Chỉ xuất ra câu đã được chỉnh sửa."
+            "content": f"""Kiểm tra chính tả, dấu câu và ngữ pháp của đoạn văn sau: '{text}'.
+            Một số ví dụ lỗi để bạn tham khảo:
+            iiimmmlllllaaaannnnnongggmmmocoooootttttlllaaaaatvtt thành im lặng một lát,
+            ddddxdooooccccccnnnlnnnaaayyyyyy thành đọc này,
+            nnnnnngggggaaaaaayyyrmmmmmmhaaaaiiisibbbbbaaaennnnnnccccccooogdddeeteeennnnskkkhhhoooooonnnnonnggg thành ngày mai bạn có đến không,
+            aaannnnnhhhqaaaayyyyyycccoooooohhhhhaaaiiiinnnnggtggguuuoooiiiddjdiiiiozoooobbsbbbeeeeefnnnmmmmeeeeee thành anh ấy có hai người dì ở bên mẹ.
+            Chỉ xuất ra câu đã được chỉnh sửa."""
         },
     ]
 )

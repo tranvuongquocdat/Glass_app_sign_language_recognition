@@ -25,6 +25,7 @@ class _ChatScreenState extends State<ChatScreen>
   late Socket _socket;
   String _fps = "0.00";
   String _selectedLanguage = "VI"; // Default language is Vietnamese
+  late String last_recognized_text;
 
   // Speech to Text Variables
   late stt.SpeechToText _speech;
@@ -152,7 +153,12 @@ final Map<String, String> _videoMap = {
         });
       }
       if (_isTtsEnabled && !isUser) {
-        _speak(text);
+        if (text.isEmpty && last_recognized_text.length > 5) {
+          _speak(last_recognized_text);
+          last_recognized_text = text;
+        } else {
+          last_recognized_text = text;
+        }
       }
     });
   }
