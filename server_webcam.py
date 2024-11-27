@@ -102,7 +102,7 @@ mp_drawing = mp.solutions.drawing_utils
 
 
 def draw_detections(frame, last_detections):
-    CONFIDENCE_THRESHOLD = CONFIDENCE_THRESHOLD 
+    CONFIDENCE_THRESHOLD = 0.6
     COLOR = (153, 255, 204)
     result = 99
     status = False
