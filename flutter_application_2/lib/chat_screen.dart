@@ -25,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen>
   late Socket _socket;
   String _fps = "0.00";
   String _selectedLanguage = "VI"; // Default language is Vietnamese
-  late String last_recognized_text;
+  String last_recognized_text=""; // Default
 
   // Speech to Text Variables
   late stt.SpeechToText _speech;
@@ -81,14 +81,23 @@ final Map<String, String> _videoMap = {
 };
 
 
-  @override
-  void initState() {
-    super.initState();
-    _connectToServer();
-    _initializeSpeech();
-    _loadTtsState();
-    _loadLanguageSelection(); // Load saved language
+@override
+void initState() {
+  super.initState();
+  _connectToServer();
+  _initializeSpeech();
+  _loadTtsState();
+  _loadLanguageSelection(); // Load saved language
+  _setTtsLanguage(); // Set TTS language based on selection
+}
+
+void _setTtsLanguage() {
+  if (_selectedLanguage == "VI") {
+    _flutterTts.setLanguage("vi-VN"); // Vietnamese language
+  } else if (_selectedLanguage == "EN") {
+    _flutterTts.setLanguage("en-US"); // English language
   }
+}
 
   Future<void> _loadLanguageSelection() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -144,24 +153,26 @@ final Map<String, String> _videoMap = {
     }
   }
 
-  void _addMessage(String text, bool isUser) {
-    setState(() {
-      if (_messages.isEmpty || _messages.last['text'] != text) {
-        _messages.add({
-          'text': text,
-          'isUser': isUser,
-        });
+void _addMessage(String text, bool isUser) {
+  setState(() {
+    if (_messages.isEmpty || (_messages.last['isUser'] != isUser || _messages.last['text'] != text)) {
+      _messages.add({
+        'text': text,
+        'isUser': isUser,
+      });
+      if (_isTtsEnabled){
+      _speak(text);
       }
-      if (_isTtsEnabled && !isUser) {
-        if (text.isEmpty && last_recognized_text.length > 5) {
-          _speak(last_recognized_text);
-          last_recognized_text = text;
-        } else {
-          last_recognized_text = text;
-        }
-      }
-    });
-  }
+    }
+
+    if (_isTtsEnabled && !isUser) {
+      if (text.isEmpty && last_recognized_text.length > 5) {
+        _speak(last_recognized_text);
+      };
+      last_recognized_text = text;
+    }
+  });
+}
 
   Future<void> _speak(String text) async {
     await _flutterTts.speak(text);
@@ -298,7 +309,7 @@ final Map<String, String> _videoMap = {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'SPECS Chatbox (${_selectedLanguage == "EN" ? "English" : "Vietnamese"})',
+          'SPECS Chatbox',
         ),
         actions: [
           IconButton(

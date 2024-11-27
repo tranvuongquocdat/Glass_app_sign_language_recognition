@@ -36,7 +36,7 @@ class AboutUsPage extends StatelessWidget {
               'Team Members:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text('John Doe\nJane Smith\nBob Johnson'),
+            Text('Minh Quang\nQuang Minh'),
             SizedBox(height: 20),
             Text(
               'Organization:',
