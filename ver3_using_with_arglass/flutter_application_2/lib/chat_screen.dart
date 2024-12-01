@@ -139,29 +139,58 @@ void _setTtsLanguage() {
     }
   }
 
-  void _processData(Uint8List data) {
-    ByteData byteData = ByteData.sublistView(data);
-    int msgLength = byteData.getUint32(0, Endian.little);
-    if (data.length >= msgLength + 4) {
-      Uint8List messageBytes = data.sublist(4, msgLength + 4);
-      String message = utf8.decode(messageBytes);
-      List<String> parts = message.split(',');
-      setState(() {
-        _fps = parts[0];
-        _addMessage(parts[1], false);
-      });
-    }
+void _processData(Uint8List data) {
+  ByteData byteData = ByteData.sublistView(data);
+  int msgLength = byteData.getUint32(0, Endian.little);
+  if (data.length >= msgLength + 4) {
+    Uint8List messageBytes = data.sublist(4, msgLength + 4);
+    String message = utf8.decode(messageBytes);
+
+    List<String> parts = message.split(',');
+    setState(() {
+      _fps = parts[0];
+      String systemMessage = parts[1];
+
+      // Chỉ thêm nếu thông điệp từ hệ thống chưa có trong 3 thông điệp gần nhất
+      if (!_messages.any((msg) => msg['isUser'] == false && msg['text'] == systemMessage)) {
+        _addMessage(systemMessage, false);
+      }
+    });
   }
+}
+
 
 void _addMessage(String text, bool isUser) {
   setState(() {
-    if (_messages.isEmpty || (_messages.last['isUser'] != isUser || _messages.last['text'] != text)) {
+    // Nếu là thông điệp của hệ thống (isUser == false), kiểm tra 3 thông điệp gần nhất
+    if (!isUser) {
+      // Lấy ra 3 thông điệp gần nhất từ hệ thống
+      List<Map<String, dynamic>> recentSystemMessages = _messages
+          .where((message) => message['isUser'] == false)
+          .take(2)
+          .toList();
+
+      // Kiểm tra xem text có xuất hiện trong 3 thông điệp gần nhất của hệ thống không
+      bool isDuplicate = recentSystemMessages.any((message) => message['text'] == text);
+
+      if (!isDuplicate) {
+        // Nếu không trùng lặp, thêm thông điệp vào danh sách
+        _messages.add({
+          'text': text,
+          'isUser': isUser,
+        });
+        if (_isTtsEnabled) {
+          _speak(text);
+        }
+      }
+    } else {
+      // Nếu là thông điệp của người dùng, thêm vào danh sách ngay lập tức
       _messages.add({
         'text': text,
         'isUser': isUser,
       });
-      if (_isTtsEnabled){
-      _speak(text);
+      if (_isTtsEnabled) {
+        _speak(text);
       }
     }
 
@@ -173,6 +202,7 @@ void _addMessage(String text, bool isUser) {
     }
   });
 }
+
 
   Future<void> _speak(String text) async {
     await _flutterTts.speak(text);
