@@ -1032,7 +1032,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                           _model.messageIndex + 1;
                                       safeSetState(() {});
                                       HapticFeedback.lightImpact();
-                                      _model.addToChatHistory('...');
+                                      _model.addToChatHistory('none');
                                       _model.messageIndex =
                                           _model.messageIndex + 1;
                                       safeSetState(() {});
@@ -1060,7 +1060,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                           _model.messageIndex + 1;
                                       safeSetState(() {});
                                       HapticFeedback.lightImpact();
-                                      _model.addToChatHistory('...');
+                                      _model.addToChatHistory('none');
                                       _model.messageIndex =
                                           _model.messageIndex + 1;
                                       safeSetState(() {});
