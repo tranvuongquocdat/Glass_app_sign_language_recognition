@@ -69,6 +69,11 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
         _model.addToChatHistory(widget!.serverResponse);
         _model.messageIndex = _model.messageIndex + 1;
         safeSetState(() {});
+        await _model.listViewController?.animateTo(
+          _model.listViewController!.position.maxScrollExtent,
+          duration: Duration(milliseconds: 100),
+          curve: Curves.ease,
+        );
       }
     });
 
