@@ -1,4 +1,5 @@
 import '/backend/backend.dart';
+import '/backend/gemini/gemini.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -66,14 +67,42 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
         _model.addToChatHistory('...');
         _model.messageIndex = _model.messageIndex + 1;
         safeSetState(() {});
-        _model.addToChatHistory(widget!.serverResponse);
-        _model.messageIndex = _model.messageIndex + 1;
+        _model.addToChatHistory('...');
         safeSetState(() {});
         await _model.listViewController?.animateTo(
           _model.listViewController!.position.maxScrollExtent,
           duration: Duration(milliseconds: 100),
           curve: Curves.ease,
         );
+        if (FFAppState().vietnameseEnable) {
+          await geminiGenerateText(
+            context,
+            'Bạn là một bot kiểm tra chính tả và ngữ pháp tiếng Việt. Nhiệm vụ của bạn là chỉnh sửa văn bản có lỗi sai do lặp chữ, sai chính tả hoặc cấu trúc câu chưa chính xác. Sau đây là một số ví dụ để tham khảo:\"iiimmmlllllaaaannnnnongggmmmocoooootttttlllaaaaatvtt\" → \"im lặng một lát\"\"ddddxdooooccccccnnnlnnnaaayyyyyy\" → \"đọc này\"\"nnnnnngggggaaaaaayyyrmmmmmmhaaaaiiisibbbbbaaaennnnnnccccccooogdddeeteeennnnskkkhhhoooooonnnnonnggg\" → \"ngày mai bạn có đến không\"\"aaannnnnhhhqaaaayyyyyycccoooooohhhhhaaaiiiinnnnggtggguuuoooiiiddjdiiiiozoooobbsbbbeeeeefnnnmmmmeeeeee\" → \"anh ấy có hai người dì ở bên mẹ\"Chỉ xuất ra câu đã được chỉnh sửa, đảm bảo chính tả, ngữ pháp và dấu câu chuẩn xác.Ví dụ:\"Ttttrrrooooiioiioooaaaabbbbuuuuaaaa,\" sẽ trở thành \"Trời ơi, mưa!\"Bây giờ, hãy áp dụng quy tắc này để chỉnh sửa văn bản sau:${widget!.serverResponse}',
+          ).then((generatedText) {
+            safeSetState(() => _model.vieCorretedOutput = generatedText);
+          });
+
+          _model.updateChatHistoryAtIndex(
+            _model.messageIndex,
+            (_) => _model.vieCorretedOutput!,
+          );
+          _model.messageIndex = _model.messageIndex + 1;
+          safeSetState(() {});
+        } else {
+          await geminiGenerateText(
+            context,
+            'You are an English spelling and grammar correction bot. Here are examples of common errors for reference:\"hheelllooooowwwwwwwwoooorrrrllllldddd\" → \"hello world\"\"wwwhhhaaaattttttaaarrrreeeeyyyooouuudooiinngggg\" → \"what are you doing\"\"yyyyeeeesssssiicannnnnnheeeaaarrrrryouuuuuu\" → \"yes, I can hear you\"\"cccoooouuulllddddyyyoouuuuhelpmmmeeeee\" → \"could you help me\"Output only the corrected version of the sentence. Ensure proper spelling, grammar, punctuation, and case for all text.Now, correct this text:${widget!.serverResponse}',
+          ).then((generatedText) {
+            safeSetState(() => _model.engCorrectedOutput = generatedText);
+          });
+
+          _model.updateChatHistoryAtIndex(
+            _model.messageIndex,
+            (_) => _model.engCorrectedOutput!,
+          );
+          _model.messageIndex = _model.messageIndex + 1;
+          safeSetState(() {});
+        }
       }
     });
 
@@ -385,7 +414,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     if ((chatIndex % 3 == 2) &&
-                                                        (chatItem != '...'))
+                                                        (chatItem != 'none'))
                                                       Row(
                                                         mainAxisSize:
                                                             MainAxisSize.max,
@@ -1167,7 +1196,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                 _model.messageIndex = _model.messageIndex + 1;
                                 safeSetState(() {});
                                 HapticFeedback.lightImpact();
-                                _model.addToChatHistory('...');
+                                _model.addToChatHistory('none');
                                 _model.messageIndex = _model.messageIndex + 1;
                                 safeSetState(() {});
                                 await _model.listViewController?.animateTo(
@@ -1185,7 +1214,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                 _model.messageIndex = _model.messageIndex + 1;
                                 safeSetState(() {});
                                 HapticFeedback.lightImpact();
-                                _model.addToChatHistory('...');
+                                _model.addToChatHistory('none');
                                 _model.messageIndex = _model.messageIndex + 1;
                                 safeSetState(() {});
                                 await _model.listViewController?.animateTo(

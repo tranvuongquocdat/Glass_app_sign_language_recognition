@@ -1,4 +1,5 @@
 import '/backend/backend.dart';
+import '/backend/gemini/gemini.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -75,6 +76,24 @@ class ChatPageModel extends FlutterFlowModel<ChatPageWidget> {
   String? get userInfo => _userInfo;
 
   ///  State fields for stateful widgets in this page.
+
+  // Stores action output result for [Gemini - Generate Text] action in chatPage widget.
+  String? _vieCorretedOutput;
+  set vieCorretedOutput(String? value) {
+    _vieCorretedOutput = value;
+    debugLogWidgetClass(this);
+  }
+
+  String? get vieCorretedOutput => _vieCorretedOutput;
+
+  // Stores action output result for [Gemini - Generate Text] action in chatPage widget.
+  String? _engCorrectedOutput;
+  set engCorrectedOutput(String? value) {
+    _engCorrectedOutput = value;
+    debugLogWidgetClass(this);
+  }
+
+  String? get engCorrectedOutput => _engCorrectedOutput;
 
   // State field(s) for ListView widget.
   ScrollController? listViewController;
@@ -191,6 +210,24 @@ class ChatPageModel extends FlutterFlowModel<ChatPageWidget> {
         widgetStates: {
           'userInputText': debugSerializeParam(
             userInputTextController?.text,
+            ParamType.String,
+            link:
+                'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatPage',
+            name: 'String',
+            nullable: true,
+          )
+        },
+        actionOutputs: {
+          'vieCorretedOutput': debugSerializeParam(
+            vieCorretedOutput,
+            ParamType.String,
+            link:
+                'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatPage',
+            name: 'String',
+            nullable: true,
+          ),
+          'engCorrectedOutput': debugSerializeParam(
+            engCorrectedOutput,
             ParamType.String,
             link:
                 'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatPage',

@@ -33,8 +33,8 @@ class _MoreOptionsWidgetState extends State<MoreOptionsWidget> with RouteAware {
     super.initState();
     _model = createModel(context, () => MoreOptionsModel());
 
-    _model.switchValue1 = true;
-    _model.switchValue2 = true;
+    _model.switchValue1 = FFAppState().vietnameseEnable;
+    _model.switchValue2 = FFAppState().enableText2Speech;
   }
 
   @override
@@ -49,6 +49,7 @@ class _MoreOptionsWidgetState extends State<MoreOptionsWidget> with RouteAware {
     DebugFlutterFlowModelContext.maybeOf(context)
         ?.parentModelCallback
         ?.call(_model);
+    context.watch<FFAppState>();
 
     return Padding(
       padding: EdgeInsets.all(16.0),

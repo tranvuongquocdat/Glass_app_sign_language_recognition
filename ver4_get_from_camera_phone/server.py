@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
 import base64
 import tempfile
@@ -7,8 +7,13 @@ from ultralytics import YOLO
 from typing import List
 from tqdm import tqdm
 import socket
+import logging
 
 from fastapi.middleware.cors import CORSMiddleware
+
+# Tắt log không cần thiết của uvicorn
+logging.getLogger("uvicorn.access").disabled = True
+logging.getLogger("uvicorn.error").disabled = True
 
 app = FastAPI()
 app.add_middleware(
@@ -53,7 +58,8 @@ async def process_video(request: VideoRequest):
 
         video_results = []  # Tạm lưu các phát hiện cho video này
 
-        with tqdm(total=total_frames, desc="Processing Video", unit="frame") as pbar:
+        # Sử dụng tqdm với dynamic_ncols=True để điều chỉnh hiển thị
+        with tqdm(total=total_frames, desc="Processing Video", unit="frame", dynamic_ncols=True) as pbar:
             while cap.isOpened():
                 ret, frame = cap.read()
                 if not ret:
@@ -76,6 +82,6 @@ async def process_video(request: VideoRequest):
 
     # Prepare response
     language = "vi" if request.isVietnamese else "en"
-    response = {results.strip()  # Xóa ký tự xuống dòng cuối
-    }
+    response = {results.strip()}
+    print("response: ",response)
     return response
