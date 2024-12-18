@@ -102,6 +102,39 @@ class ChatPageModel extends FlutterFlowModel<ChatPageWidget> {
 
   @override
   WidgetClassDebugData toWidgetClassDebugData() => WidgetClassDebugData(
+        widgetParameters: {
+          'serverResponse': debugSerializeParam(
+            widget?.serverResponse,
+            ParamType.String,
+            link:
+                'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatPage',
+            searchReference:
+                'reference=SigKGAoOc2VydmVyUmVzcG9uc2USBnZpY2JleSoGEgRudWxscgQIAyAAUAFaDnNlcnZlclJlc3BvbnNl',
+            name: 'String',
+            nullable: false,
+          ),
+          'chatHistory': debugSerializeParam(
+            widget?.chatHistory,
+            ParamType.String,
+            isList: true,
+            link:
+                'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatPage',
+            searchReference:
+                'reference=Sh8KFQoLY2hhdEhpc3RvcnkSBmJhbGpvZXIGEgIIAyAAUAFaC2NoYXRIaXN0b3J5',
+            name: 'String',
+            nullable: true,
+          ),
+          'messageIndex': debugSerializeParam(
+            widget?.messageIndex,
+            ParamType.int,
+            link:
+                'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatPage',
+            searchReference:
+                'reference=SiMKFgoMbWVzc2FnZUluZGV4EgZvNmNxMWgqAxIBMHIECAEgAFABWgxtZXNzYWdlSW5kZXg=',
+            name: 'int',
+            nullable: false,
+          )
+        }.withoutNulls,
         localStates: {
           'inputContent': debugSerializeParam(
             inputContent,

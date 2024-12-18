@@ -9,5 +9,5 @@ export '/pages/sign_in_page/sign_in_page_widget.dart' show SignInPageWidget;
 export '/pages/sign_up_page/sign_up_page_widget.dart' show SignUpPageWidget;
 export '/pages/test_speak_to_text/test_speak_to_text_widget.dart'
     show TestSpeakToTextWidget;
-export '/pages/record_video_page/record_video_page_widget.dart'
-    show RecordVideoPageWidget;
+export '/pages/chatrecord_video_page/chatrecord_video_page_widget.dart'
+    show ChatrecordVideoPageWidget;

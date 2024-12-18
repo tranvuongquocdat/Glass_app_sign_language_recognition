@@ -8,7 +8,17 @@ from ultralytics import YOLO
 from typing import List
 from tqdm import tqdm
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Thay "*" bằng danh sách origin được phép nếu cần
+    allow_methods=["*"],  # Cho phép tất cả các phương thức
+    allow_headers=["*"],  # Cho phép tất cả các headers
+)
+
+
 
 class VideoRequest(BaseModel):
     videos: List[str]  # List of base64-encoded video strings
@@ -56,6 +66,6 @@ async def process_video(request: VideoRequest):
     language = "vi" if request.isVietnamese else "en"
     response = {
         "language": language,
-        "results": results
+        "results": "successfully constructed"
     }
     return response

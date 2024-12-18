@@ -273,6 +273,9 @@ class _EnterServerIPAddressPageWidgetState
                         FFButtonWidget(
                           onPressed: () async {
                             HapticFeedback.heavyImpact();
+                            FFAppState().IPAddress =
+                                _model.signInEmailTextController.text;
+                            safeSetState(() {});
 
                             context.pushNamed('chatPage');
                           },

@@ -22,7 +22,17 @@ import 'chat_page_model.dart';
 export 'chat_page_model.dart';
 
 class ChatPageWidget extends StatefulWidget {
-  const ChatPageWidget({super.key});
+  const ChatPageWidget({
+    super.key,
+    String? serverResponse,
+    this.chatHistory,
+    int? messageIndex,
+  })  : this.serverResponse = serverResponse ?? 'null',
+        this.messageIndex = messageIndex ?? 0;
+
+  final String serverResponse;
+  final List<String>? chatHistory;
+  final int messageIndex;
 
   @override
   State<ChatPageWidget> createState() => _ChatPageWidgetState();
@@ -44,6 +54,22 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       setDarkModeSetting(context, ThemeMode.dark);
+      if (widget!.chatHistory != null && (widget!.chatHistory)!.isNotEmpty) {
+        _model.chatHistory = widget!.chatHistory!.toList().cast<String>();
+        _model.messageIndex = widget!.messageIndex;
+        safeSetState(() {});
+      }
+      if (widget!.serverResponse != 'null') {
+        _model.addToChatHistory('...');
+        _model.messageIndex = _model.messageIndex + 1;
+        safeSetState(() {});
+        _model.addToChatHistory('...');
+        _model.messageIndex = _model.messageIndex + 1;
+        safeSetState(() {});
+        _model.addToChatHistory(widget!.serverResponse);
+        _model.messageIndex = _model.messageIndex + 1;
+        safeSetState(() {});
+      }
     });
 
     _model.userInputTextController ??= TextEditingController()
@@ -616,7 +642,8 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                                           ),
                                                         ],
                                                       ),
-                                                    if (chatIndex % 3 == 0)
+                                                    if ((chatIndex % 3 == 0) &&
+                                                        (chatItem != '...'))
                                                       Row(
                                                         mainAxisSize:
                                                             MainAxisSize.max,
@@ -898,7 +925,20 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                           ),
                           showLoadingIndicator: true,
                           onPressed: () async {
-                            context.pushNamed('recordVideoPage');
+                            context.pushNamed(
+                              'chatrecordVideoPage',
+                              queryParameters: {
+                                'chatHistory': serializeParam(
+                                  _model.chatHistory,
+                                  ParamType.String,
+                                  isList: true,
+                                ),
+                                'messageIndex': serializeParam(
+                                  _model.messageIndex,
+                                  ParamType.int,
+                                ),
+                              }.withoutNulls,
+                            );
                           },
                         ),
                         Stack(

@@ -38,8 +38,8 @@ const debugRouteLinkMap = {
       'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=signUpPage',
   '/testSpeakToText':
       'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=testSpeakToText',
-  '/recordVideoPage':
-      'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=recordVideoPage'
+  '/chatrecordVideoPage':
+      'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatrecordVideoPage'
 };
 
 class AppStateNotifier extends ChangeNotifier {
@@ -122,7 +122,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'chatPage',
           path: '/chatPage',
-          builder: (context, params) => ChatPageWidget(),
+          builder: (context, params) => ChatPageWidget(
+            serverResponse: params.getParam(
+              'serverResponse',
+              ParamType.String,
+            ),
+            chatHistory: params.getParam<String>(
+              'chatHistory',
+              ParamType.String,
+              isList: true,
+            ),
+            messageIndex: params.getParam(
+              'messageIndex',
+              ParamType.int,
+            ),
+          ),
         ),
         FFRoute(
           name: 'SignlanguageVideo',
@@ -145,9 +159,19 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => TestSpeakToTextWidget(),
         ),
         FFRoute(
-          name: 'recordVideoPage',
-          path: '/recordVideoPage',
-          builder: (context, params) => RecordVideoPageWidget(),
+          name: 'chatrecordVideoPage',
+          path: '/chatrecordVideoPage',
+          builder: (context, params) => ChatrecordVideoPageWidget(
+            chatHistory: params.getParam<String>(
+              'chatHistory',
+              ParamType.String,
+              isList: true,
+            ),
+            messageIndex: params.getParam(
+              'messageIndex',
+              ParamType.int,
+            ),
+          ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],
