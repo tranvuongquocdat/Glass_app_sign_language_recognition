@@ -71,7 +71,7 @@ class _CameraPhotoState extends State<CameraPhoto> {
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             if (controller == null) {
               controller =
-                  CameraController(snapshot.data![0], ResolutionPreset.medium);
+                  CameraController(snapshot.data![0], ResolutionPreset.max);
               controller!.initialize().then((_) {
                 if (!mounted) {
                   return;
