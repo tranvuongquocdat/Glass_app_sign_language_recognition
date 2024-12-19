@@ -52,6 +52,10 @@ class _VideoWidgetState extends State<VideoWidget> {
   }
 
   void _startCapturing() {
+    // Làm rỗng danh sách base64 trước khi bắt đầu
+    FFAppState().update(() {
+      FFAppState().fileBase64List.clear();
+    });
     setState(() {
       _isCapturing = true;
     });

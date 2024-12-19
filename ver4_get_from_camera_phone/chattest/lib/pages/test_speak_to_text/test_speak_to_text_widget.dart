@@ -3,6 +3,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
+import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,6 +28,12 @@ class _TestSpeakToTextWidgetState extends State<TestSpeakToTextWidget>
   void initState() {
     super.initState();
     _model = createModel(context, () => TestSpeakToTextModel());
+
+    _model.textController ??= TextEditingController()
+      ..addListener(() {
+        debugLogWidgetClass(_model);
+      });
+    _model.textFieldFocusNode ??= FocusNode();
   }
 
   @override
@@ -135,6 +142,83 @@ class _TestSpeakToTextWidgetState extends State<TestSpeakToTextWidget>
                 custom_widgets.SpeechToTextWidget(
                   width: 100.0,
                   height: 100.0,
+                ),
+                Container(
+                  width: 200.0,
+                  child: TextFormField(
+                    controller: _model.textController,
+                    focusNode: _model.textFieldFocusNode,
+                    autofocus: false,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      labelStyle:
+                          FlutterFlowTheme.of(context).labelMedium.override(
+                                fontFamily: 'Inter',
+                                letterSpacing: 0.0,
+                              ),
+                      hintText: 'TextField',
+                      hintStyle:
+                          FlutterFlowTheme.of(context).labelMedium.override(
+                                fontFamily: 'Inter',
+                                letterSpacing: 0.0,
+                              ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0x00000000),
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0x00000000),
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: FlutterFlowTheme.of(context).error,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: FlutterFlowTheme.of(context).error,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      filled: true,
+                      fillColor:
+                          FlutterFlowTheme.of(context).secondaryBackground,
+                    ),
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          fontFamily: 'Inter',
+                          letterSpacing: 0.0,
+                        ),
+                    cursorColor: FlutterFlowTheme.of(context).primaryText,
+                    validator:
+                        _model.textControllerValidator.asValidator(context),
+                  ),
+                ),
+                FlutterFlowIconButton(
+                  borderRadius: 8.0,
+                  buttonSize: 40.0,
+                  fillColor: FlutterFlowTheme.of(context).primary,
+                  icon: Icon(
+                    Icons.play_arrow,
+                    color: FlutterFlowTheme.of(context).info,
+                    size: 24.0,
+                  ),
+                  onPressed: () async {
+                    await actions.textToSpeechAction(
+                      _model.textController.text,
+                      FFAppState().vietnameseEnable,
+                    );
+                  },
                 ),
               ].divide(SizedBox(height: 12.0)),
             ),

@@ -46,6 +46,22 @@ class FFAppState extends ChangeNotifier {
     debugLogAppState(this);
   }
 
+  bool _makeSpeech = false;
+  bool get makeSpeech => _makeSpeech;
+  set makeSpeech(bool value) {
+    _makeSpeech = value;
+
+    debugLogAppState(this);
+  }
+
+  String _textToSpeechInput = '';
+  String get textToSpeechInput => _textToSpeechInput;
+  set textToSpeechInput(String value) {
+    _textToSpeechInput = value;
+
+    debugLogAppState(this);
+  }
+
   bool _makePhoto = false;
   bool get makePhoto => _makePhoto;
   set makePhoto(bool value) {
@@ -144,6 +160,26 @@ class FFAppState extends ChangeNotifier {
               'https://app.flutterflow.io/project/chattest-fwf3ic?tab=appValues&appValuesTab=state',
           searchReference:
               'reference=ChsKFQoJSVBBZGRyZXNzEgh4dWtucDVxZnICCANaCUlQQWRkcmVzcw==',
+          name: 'String',
+          nullable: false,
+        ),
+        'makeSpeech': debugSerializeParam(
+          makeSpeech,
+          ParamType.bool,
+          link:
+              'https://app.flutterflow.io/project/chattest-fwf3ic?tab=appValues&appValuesTab=state',
+          searchReference:
+              'reference=ChwKFgoKbWFrZVNwZWVjaBIIN29qMjBldTlyAggFWgptYWtlU3BlZWNo',
+          name: 'bool',
+          nullable: false,
+        ),
+        'textToSpeechInput': debugSerializeParam(
+          textToSpeechInput,
+          ParamType.String,
+          link:
+              'https://app.flutterflow.io/project/chattest-fwf3ic?tab=appValues&appValuesTab=state',
+          searchReference:
+              'reference=CiMKHQoRdGV4dFRvU3BlZWNoSW5wdXQSCGwxcjU4bDZ5cgIIA1oRdGV4dFRvU3BlZWNoSW5wdXQ=',
           name: 'String',
           nullable: false,
         ),

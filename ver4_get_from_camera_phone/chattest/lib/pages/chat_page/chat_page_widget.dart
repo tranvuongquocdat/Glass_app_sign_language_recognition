@@ -8,6 +8,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/pages/more_options/more_options_widget.dart';
 import 'dart:math';
 import 'dart:ui';
+import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:aligned_dialog/aligned_dialog.dart';
@@ -88,6 +89,12 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
           );
           _model.messageIndex = _model.messageIndex + 1;
           safeSetState(() {});
+          if (FFAppState().enableText2Speech) {
+            await actions.textToSpeechAction(
+              _model.vieCorretedOutput!,
+              true,
+            );
+          }
         } else {
           await geminiGenerateText(
             context,
@@ -102,6 +109,12 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
           );
           _model.messageIndex = _model.messageIndex + 1;
           safeSetState(() {});
+          if (FFAppState().enableText2Speech) {
+            await actions.textToSpeechAction(
+              _model.engCorrectedOutput!,
+              true,
+            );
+          }
         }
       }
     });
@@ -241,7 +254,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                           size: 15.0,
                                         ),
                                         onPressed: () async {
-                                          context.safePop();
+                                          context.pushNamed('HomePage');
                                         },
                                       ),
                                       Row(
@@ -1185,48 +1198,65 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                             if (_model.userInputTextController.text != null &&
                                 _model.userInputTextController.text != '') {
                               HapticFeedback.heavyImpact();
-                              _model.addToChatHistory(
-                                  _model.userInputTextController.text);
-                              _model.messageIndex = _model.messageIndex + 1;
-                              safeSetState(() {});
-                              if (functions.textContained(
-                                      _model.userInputTextController.text) ==
-                                  '...') {
-                                _model.addToChatHistory('...');
-                                _model.messageIndex = _model.messageIndex + 1;
-                                safeSetState(() {});
-                                HapticFeedback.lightImpact();
-                                _model.addToChatHistory('none');
-                                _model.messageIndex = _model.messageIndex + 1;
-                                safeSetState(() {});
-                                await _model.listViewController?.animateTo(
-                                  _model.listViewController!.position
-                                      .maxScrollExtent,
-                                  duration: Duration(milliseconds: 100),
-                                  curve: Curves.ease,
-                                );
-                                safeSetState(() {
-                                  _model.userInputTextController?.clear();
-                                });
-                              } else {
-                                _model.addToChatHistory(functions.textContained(
-                                    _model.userInputTextController.text));
-                                _model.messageIndex = _model.messageIndex + 1;
-                                safeSetState(() {});
-                                HapticFeedback.lightImpact();
-                                _model.addToChatHistory('none');
-                                _model.messageIndex = _model.messageIndex + 1;
-                                safeSetState(() {});
-                                await _model.listViewController?.animateTo(
-                                  _model.listViewController!.position
-                                      .maxScrollExtent,
-                                  duration: Duration(milliseconds: 100),
-                                  curve: Curves.ease,
-                                );
-                                safeSetState(() {
-                                  _model.userInputTextController?.clear();
-                                });
-                              }
+                              await Future.wait([
+                                Future(() async {
+                                  _model.addToChatHistory(
+                                      _model.userInputTextController.text);
+                                  _model.messageIndex = _model.messageIndex + 1;
+                                  safeSetState(() {});
+                                  if (functions.textContained(_model
+                                          .userInputTextController.text) ==
+                                      '...') {
+                                    _model.addToChatHistory('...');
+                                    _model.messageIndex =
+                                        _model.messageIndex + 1;
+                                    safeSetState(() {});
+                                    HapticFeedback.lightImpact();
+                                    _model.addToChatHistory('none');
+                                    _model.messageIndex =
+                                        _model.messageIndex + 1;
+                                    safeSetState(() {});
+                                    await _model.listViewController?.animateTo(
+                                      _model.listViewController!.position
+                                          .maxScrollExtent,
+                                      duration: Duration(milliseconds: 100),
+                                      curve: Curves.ease,
+                                    );
+                                    safeSetState(() {
+                                      _model.userInputTextController?.clear();
+                                    });
+                                  } else {
+                                    _model.addToChatHistory(
+                                        functions.textContained(_model
+                                            .userInputTextController.text));
+                                    _model.messageIndex =
+                                        _model.messageIndex + 1;
+                                    safeSetState(() {});
+                                    HapticFeedback.lightImpact();
+                                    _model.addToChatHistory('none');
+                                    _model.messageIndex =
+                                        _model.messageIndex + 1;
+                                    safeSetState(() {});
+                                    await _model.listViewController?.animateTo(
+                                      _model.listViewController!.position
+                                          .maxScrollExtent,
+                                      duration: Duration(milliseconds: 100),
+                                      curve: Curves.ease,
+                                    );
+                                    safeSetState(() {
+                                      _model.userInputTextController?.clear();
+                                    });
+                                  }
+                                }),
+                                Future(() async {
+                                  if (FFAppState().enableText2Speech == true) {
+                                    await actions.textToSpeechAction(
+                                      _model.userInputTextController.text,
+                                      FFAppState().vietnameseEnable,
+                                    );
+                                  }
+                                }),
+                              ]);
                             }
                           },
                         ),
