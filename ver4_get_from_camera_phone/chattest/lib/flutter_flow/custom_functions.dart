@@ -51,7 +51,14 @@ String textContained(String inputString) {
     'tôi khỏe',
     'tôi mệt',
     'xin chào',
-    'xin lỗi'
+    'xin lỗi',
+    'do you like study',
+    'let’s eat out',
+    'mee too',
+    'you must try the bread that my mom cooks',
+    'bạn thích học không',
+    'đồng ý',
+    'tôi cũng thế'
   ];
 
   /// Check if any word in the list is contained in the input string

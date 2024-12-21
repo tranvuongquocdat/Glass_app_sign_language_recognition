@@ -48,11 +48,8 @@ class _SpeechToTextWidgetState extends State<SpeechToTextWidget>
   Future<void> _initializeSpeechRecognition() async {
     bool available = await _speechToText.initialize(
       onStatus: (status) {
-        if (status == "notListening" && FFAppState().isRecording) {
-          FFAppState().update(() {
-            FFAppState().isRecording = false;
-          });
-        }
+        print("Speech status: $status");
+        // Không tự động ngắt khi "notListening"
       },
       onError: (error) {
         print("Speech recognition error: $error");
@@ -77,6 +74,7 @@ class _SpeechToTextWidgetState extends State<SpeechToTextWidget>
         );
       }
     } else {
+      // Chỉ ngắt khi isRecording chuyển thành false
       if (_speechToText.isListening) {
         _speechToText.stop();
       }
@@ -96,7 +94,7 @@ class _SpeechToTextWidgetState extends State<SpeechToTextWidget>
             scale: FFAppState().isRecording ? _animationController.value : 1.0,
             child: Icon(
               FFAppState().isRecording ? Icons.stop : Icons.mic,
-              size: 0.1,
+              size: 36.0, // Điều chỉnh kích thước icon
               color: FlutterFlowTheme.of(context).primaryColor,
             ),
           );
@@ -107,11 +105,10 @@ class _SpeechToTextWidgetState extends State<SpeechToTextWidget>
 
   @override
   void dispose() {
-    _speechToText.stop();
+    if (_speechToText.isListening) {
+      _speechToText.stop(); // Đảm bảo dừng speech-to-text khi dispose
+    }
     _animationController.dispose();
     super.dispose();
   }
 }
-
-// Set your widget name, define your parameter, and then add the
-// boilerplate code using the green button on the right!
