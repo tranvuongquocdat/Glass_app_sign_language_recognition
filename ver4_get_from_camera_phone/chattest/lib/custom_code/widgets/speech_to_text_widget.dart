@@ -62,10 +62,12 @@ class _SpeechToTextWidgetState extends State<SpeechToTextWidget>
   }
 
   void _toggleListening() {
+    // Set localeId based on the selected language
+    String localeId = FFAppState().vietnameseEnable ? 'vi_VN' : 'en_US';
     if (FFAppState().isRecording) {
       if (_isSpeechAvailable && !_speechToText.isListening) {
         _speechToText.listen(
-          localeId: FFAppState().vietnameseEnable ? 'vi_VN' : 'en_US',
+          // localeId: localeId,
           onResult: (result) {
             FFAppState().update(() {
               FFAppState().speechToTextOutput = result.recognizedWords;
@@ -94,7 +96,7 @@ class _SpeechToTextWidgetState extends State<SpeechToTextWidget>
             scale: FFAppState().isRecording ? _animationController.value : 1.0,
             child: Icon(
               FFAppState().isRecording ? Icons.stop : Icons.mic,
-              size: 36.0, // Điều chỉnh kích thước icon
+              size: 0.1, // Điều chỉnh kích thước icon
               color: FlutterFlowTheme.of(context).primaryColor,
             ),
           );

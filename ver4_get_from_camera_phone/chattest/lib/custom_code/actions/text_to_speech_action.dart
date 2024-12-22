@@ -10,32 +10,34 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_tts/flutter_tts.dart'; // Import FlutterTTS package
 
+final FlutterTts flutterTts = FlutterTts(); // Global reusable instance
+
 Future<void> textToSpeechAction(
   String inputString,
   bool vietnameseEnable,
 ) async {
-  final FlutterTts flutterTts = FlutterTts();
+  // Check if input string is valid
+  if (inputString == null || inputString.trim().isEmpty) {
+    debugPrint('Input string is empty or null. Skipping TTS.');
+    return;
+  }
 
   try {
-    if (vietnameseEnable) {
-      // Speak in Vietnamese
-      await flutterTts.setLanguage("vi-VN");
-    } else {
-      // Speak in English
-      await flutterTts.setLanguage("en-US");
-    }
+    // Determine the language to set
+    String targetLanguage = vietnameseEnable ? "vi-VN" : "en-US";
 
-    // Configure additional TTS settings (optional)
-    await flutterTts.setPitch(1.0); // Adjust pitch if needed
-    await flutterTts.setSpeechRate(0.5); // Adjust speech rate if needed
+    // Set language directly
+    await flutterTts.setLanguage(targetLanguage);
 
-    // Speak the text
+    // Configure additional TTS settings
+    await flutterTts.setPitch(1.0); // Default pitch
+    await flutterTts.setSpeechRate(0.5); // Default speech rate
+
+    // Speak the input string
     await flutterTts.speak(inputString);
+    debugPrint('TTS is speaking: $inputString');
   } catch (e) {
-    // Handle errors gracefully
+    // Handle any errors gracefully
     debugPrint('Error in TTS: $e');
-  } finally {
-    // Cleanup or finalize if necessary
-    await flutterTts.stop();
   }
 }

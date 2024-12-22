@@ -13,6 +13,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '/auth/firebase_auth/auth_util.dart';
 
 String textContained(String inputString) {
+  /// Normalize input string and word list for comparison
+  String normalize(String text) {
+    return text
+        .toLowerCase()
+        .replaceAll("’", "'")
+        .replaceAll("‘", "'")
+        .replaceAll("`", "'");
+  }
+
   /// List of words/phrases to check
   List<String> wordList = [
     'bread',
@@ -53,17 +62,20 @@ String textContained(String inputString) {
     'xin chào',
     'xin lỗi',
     'do you like study',
-    'let’s eat out',
+    "let's eat out", // Chuyển thành dạng chuẩn
     'mee too',
     'you must try the bread that my mom cooks',
     'bạn thích học không',
     'đồng ý',
     'tôi cũng thế'
-  ];
+  ].map(normalize).toList();
+
+  /// Normalize the input string
+  String normalizedInput = normalize(inputString);
 
   /// Check if any word in the list is contained in the input string
   for (String word in wordList) {
-    if (inputString.contains(word)) {
+    if (normalizedInput.contains(word)) {
       return word;
     }
   }
