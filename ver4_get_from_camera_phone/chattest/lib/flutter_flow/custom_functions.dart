@@ -67,7 +67,17 @@ String textContained(String inputString) {
     'you must try the bread that my mom cooks',
     'bạn thích học không',
     'đồng ý',
-    'tôi cũng thế'
+    'tôi cũng thế',
+    'do you like math',
+    'i like music',
+    'it is a way to express feeling',
+    'let me take it for you',
+    'what do you want to drink',
+    'what is weather like today',
+    'bạn có thích toán không',
+    'bạn tên gì',
+    'bạn thích uống gì',
+    'hôm nay thời tiết thế nào'
   ].map(normalize).toList();
 
   /// Normalize the input string
