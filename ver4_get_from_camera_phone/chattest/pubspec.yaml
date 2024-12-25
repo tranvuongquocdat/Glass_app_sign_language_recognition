@@ -177,6 +177,8 @@ flutter:
     - assets/rive_animations/
     - assets/pdfs/
     - assets/jsons/
+    - assets/SLR_video/english/
+    - assets/SLR_video/vietnamese/
 
 
 

@@ -899,9 +899,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                                                           .circular(
                                                                               8.0),
                                                                   child: Image
-                                                                      .network(
-                                                                    containerSignLanguageVideoRecord!
-                                                                        .video,
+                                                                      .asset(functions.getRelativeVideo(containerSignLanguageVideoRecord!.name),
                                                                     width:
                                                                         120.0,
                                                                     height:
@@ -909,8 +907,10 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                                                     fit: BoxFit
                                                                         .cover,
                                                                   ),
-                                                                ),
-                                                              );
+                                                              //   child: 
+                                                              //     Text(containerSignLanguageVideoRecord!.name                                                                  //       .name)
+                                                              //   ),
+                                                              ));
                                                             },
                                                           ),
                                                         ],
