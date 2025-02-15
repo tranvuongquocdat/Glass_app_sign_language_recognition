@@ -11,6 +11,37 @@ import 'package:provider/provider.dart';
 import 'test_speak_to_text_model.dart';
 export 'test_speak_to_text_model.dart';
 
+class LanguageStrings {
+  static Map<String, Map<String, String>> content = {
+    'vi': {
+      'title': 'Giám định tính năng',
+      'apiKey_label': 'Khóa API Dịch vụ',
+      'apiKey_hint': 'Nhập khóa API...',
+      'submit': 'Xác nhận',
+      'api_success': 'Cập nhật khóa API thành công!',
+      'start_recording': 'Bắt đầu ghi âm',
+      'stop_recording': 'Dừng ghi âm',
+      'play_text': 'Phát văn bản',
+      'enter_text': 'Nhập văn bản...',
+    },
+    'en': {
+      'title': 'Test Speech to Text',
+      'apiKey_label': 'Service API Key',
+      'apiKey_hint': 'Enter API Key...',
+      'submit': 'Submit',
+      'api_success': 'API Key updated successfully!',
+      'start_recording': 'Start Recording',
+      'stop_recording': 'Stop Recording',
+      'play_text': 'Play Text',
+      'enter_text': 'Enter text...',
+    }
+  };
+}
+
+String getText(String key) {
+  return LanguageStrings.content[FFAppState().vietnameseEnable ? 'vi' : 'en']![key] ?? '';
+}
+
 class TestSpeakToTextWidget extends StatefulWidget {
   const TestSpeakToTextWidget({super.key});
 
@@ -34,6 +65,13 @@ class _TestSpeakToTextWidgetState extends State<TestSpeakToTextWidget>
         debugLogWidgetClass(_model);
       });
     _model.textFieldFocusNode ??= FocusNode();
+
+    _model.apiKeyController ??= TextEditingController(
+      text: FFAppState().GeminiAPIKey,
+    )..addListener(() {
+        debugLogWidgetClass(_model);
+      });
+    _model.apiKeyFocusNode ??= FocusNode();
   }
 
   @override
@@ -87,140 +125,310 @@ class _TestSpeakToTextWidgetState extends State<TestSpeakToTextWidget>
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        body: Container(
-          width: MediaQuery.sizeOf(context).width * 1.0,
-          decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).secondaryBackground,
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: Image.asset(
-                'assets/images/Background.png',
-              ).image,
+        body: SafeArea(
+          top: true,
+          child: Container(
+            decoration: BoxDecoration(
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: Image.asset(
+                  'assets/images/Background.png',
+                ).image,
+              ),
             ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text(
-                  FFAppState().speechToTextOutput,
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        fontFamily: 'Inter',
-                        letterSpacing: 0.0,
+                Align(
+                  alignment: AlignmentDirectional(0.0, -1.0),
+                  child: Stack(
+                    alignment: AlignmentDirectional(0.0, 0.0),
+                    children: [
+                      Container(
+                        width: MediaQuery.sizeOf(context).width * 1.0,
+                        height: 107.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: Image.asset(
+                              'assets/images/header_fix3.png',
+                            ).image,
+                          ),
+                        ),
                       ),
-                ),
-                FlutterFlowIconButton(
-                  borderRadius: 8.0,
-                  buttonSize: 40.0,
-                  fillColor: FlutterFlowTheme.of(context).primary,
-                  icon: Icon(
-                    Icons.mic,
-                    color: FlutterFlowTheme.of(context).info,
-                    size: 24.0,
-                  ),
-                  onPressed: () async {
-                    FFAppState().isRecording = true;
-                    safeSetState(() {});
-                  },
-                ),
-                FlutterFlowIconButton(
-                  borderColor: Colors.transparent,
-                  borderRadius: 8.0,
-                  buttonSize: 40.0,
-                  fillColor: FlutterFlowTheme.of(context).primary,
-                  icon: Icon(
-                    Icons.stop_sharp,
-                    color: FlutterFlowTheme.of(context).info,
-                    size: 24.0,
-                  ),
-                  onPressed: () async {
-                    FFAppState().isRecording = false;
-                    safeSetState(() {});
-                  },
-                ),
-                custom_widgets.SpeechToTextWidget(
-                  width: 100.0,
-                  height: 100.0,
-                ),
-                Container(
-                  width: 200.0,
-                  child: TextFormField(
-                    controller: _model.textController,
-                    focusNode: _model.textFieldFocusNode,
-                    autofocus: false,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      labelStyle:
-                          FlutterFlowTheme.of(context).labelMedium.override(
-                                fontFamily: 'Inter',
-                                letterSpacing: 0.0,
+                      Align(
+                        alignment: AlignmentDirectional(0.0, -1.0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 0.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              FlutterFlowIconButton(
+                                borderColor: FlutterFlowTheme.of(context).info,
+                                borderRadius: 8.0,
+                                borderWidth: 1.0,
+                                buttonSize: 30.0,
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  color: FlutterFlowTheme.of(context).primaryText,
+                                  size: 15.0,
+                                ),
+                                onPressed: () async {
+                                  context.safePop();
+                                },
                               ),
-                      hintText: 'TextField',
-                      hintStyle:
-                          FlutterFlowTheme.of(context).labelMedium.override(
-                                fontFamily: 'Inter',
-                                letterSpacing: 0.0,
+                              Text(
+                                getText('title'),
+                                style: FlutterFlowTheme.of(context).headlineMedium.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 20.0,
+                                  color: FlutterFlowTheme.of(context).primaryText,
+                                ),
                               ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1.0,
+                              FlutterFlowIconButton(
+                                borderColor: FlutterFlowTheme.of(context).info,
+                                borderRadius: 8.0,
+                                buttonSize: 30.0,
+                                icon: Icon(
+                                  Icons.language,
+                                  color: FlutterFlowTheme.of(context).primaryText,
+                                  size: 15.0,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    FFAppState().vietnameseEnable = !FFAppState().vietnameseEnable;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1.0,
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).secondaryBackground.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(
+                              color: FlutterFlowTheme.of(context).primary.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  getText('apiKey_label'),
+                                  style: FlutterFlowTheme.of(context).titleMedium.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 12.0),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextFormField(
+                                        controller: _model.apiKeyController,
+                                        focusNode: _model.apiKeyFocusNode,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                          hintText: getText('apiKey_hint'),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: FlutterFlowTheme.of(context).alternate,
+                                              width: 1.0,
+                                            ),
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: FlutterFlowTheme.of(context).primary,
+                                              width: 2.0,
+                                            ),
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.0),
+                                    FFButtonWidget(
+                                      onPressed: () async {
+                                        FFAppState().GeminiAPIKey = 
+                                            _model.apiKeyController.text;
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(getText('api_success')),
+                                            duration: Duration(seconds: 2),
+                                          ),
+                                        );
+                                      },
+                                      text: getText('submit'),
+                                      options: FFButtonOptions(
+                                        height: 40.0,
+                                        padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                                        iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                        color: FlutterFlowTheme.of(context).primary,
+                                        textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                          fontFamily: 'Inter',
+                                          color: Colors.white,
+                                        ),
+                                        elevation: 3.0,
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ].divide(SizedBox(height: 12.0)),
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).error,
-                          width: 1.0,
+                        SizedBox(height: 24.0),
+
+                        // Speech Recognition Section
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).secondaryBackground.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(
+                              color: FlutterFlowTheme.of(context).primary.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [
+                                if (FFAppState().isRecording)
+                                  custom_widgets.SpeechToTextWidget(
+                                    width: double.infinity,
+                                    height: 200,
+                                  ),
+                                Text(
+                                  FFAppState().speechToTextOutput,
+                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16.0,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 16.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    FlutterFlowIconButton(
+                                      borderRadius: 12.0,
+                                      buttonSize: 50.0,
+                                      fillColor: FlutterFlowTheme.of(context).primary,
+                                      icon: Icon(
+                                        Icons.mic,
+                                        color: FlutterFlowTheme.of(context).info,
+                                        size: 24.0,
+                                      ),
+                                      onPressed: () async {
+                                        FFAppState().isRecording = true;
+                                        safeSetState(() {});
+                                      },
+                                    ),
+                                    SizedBox(width: 16.0),
+                                    FlutterFlowIconButton(
+                                      borderRadius: 12.0,
+                                      buttonSize: 50.0,
+                                      fillColor: FlutterFlowTheme.of(context).error,
+                                      icon: Icon(
+                                        Icons.stop_sharp,
+                                        color: FlutterFlowTheme.of(context).info,
+                                        size: 24.0,
+                                      ),
+                                      onPressed: () async {
+                                        FFAppState().isRecording = false;
+                                        safeSetState(() {});
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).error,
-                          width: 1.0,
+                        SizedBox(height: 24.0),
+
+                        // Text to Speech Section
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).secondaryBackground.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(
+                              color: FlutterFlowTheme.of(context).primary.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: _model.textController,
+                                  focusNode: _model.textFieldFocusNode,
+                                  decoration: InputDecoration(
+                                    hintText: getText('enter_text'),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context).alternate,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context).primary,
+                                        width: 2.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                  style: FlutterFlowTheme.of(context).bodyMedium,
+                                  maxLines: 3,
+                                  minLines: 2,
+                                ),
+                                SizedBox(height: 16.0),
+                                FlutterFlowIconButton(
+                                  borderRadius: 12.0,
+                                  buttonSize: 50.0,
+                                  fillColor: FlutterFlowTheme.of(context).primary,
+                                  icon: Icon(
+                                    Icons.play_arrow,
+                                    color: FlutterFlowTheme.of(context).info,
+                                    size: 24.0,
+                                  ),
+                                  onPressed: () async {
+                                    await actions.textToSpeechAction(
+                                      _model.textController.text,
+                                      FFAppState().vietnameseEnable,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      filled: true,
-                      fillColor:
-                          FlutterFlowTheme.of(context).secondaryBackground,
+                      ],
                     ),
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          fontFamily: 'Inter',
-                          letterSpacing: 0.0,
-                        ),
-                    cursorColor: FlutterFlowTheme.of(context).primaryText,
-                    validator:
-                        _model.textControllerValidator.asValidator(context),
                   ),
                 ),
-                FlutterFlowIconButton(
-                  borderRadius: 8.0,
-                  buttonSize: 40.0,
-                  fillColor: FlutterFlowTheme.of(context).primary,
-                  icon: Icon(
-                    Icons.play_arrow,
-                    color: FlutterFlowTheme.of(context).info,
-                    size: 24.0,
-                  ),
-                  onPressed: () async {
-                    await actions.textToSpeechAction(
-                      _model.textController.text,
-                      FFAppState().vietnameseEnable,
-                    );
-                  },
-                ),
-              ].divide(SizedBox(height: 12.0)),
+              ],
             ),
           ),
         ),

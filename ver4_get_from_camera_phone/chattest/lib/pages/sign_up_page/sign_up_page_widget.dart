@@ -155,7 +155,7 @@ class _SignUpPageWidgetState extends State<SignUpPageWidget>
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Text(
-                              'Sign Up For Free',
+                              FFAppState().vietnameseEnable ? 'Đăng Ký Miễn Phí' : 'Sign Up For Free',
                               style: FlutterFlowTheme.of(context)
                                   .headlineMedium
                                   .override(
@@ -165,7 +165,9 @@ class _SignUpPageWidgetState extends State<SignUpPageWidget>
                                   ),
                             ),
                             Text(
-                              'Quickly make your account in 1 minute',
+                              FFAppState().vietnameseEnable 
+                                ? 'Tạo tài khoản nhanh chóng trong 1 phút' 
+                                : 'Quickly make your account in 1 minute',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(
@@ -687,7 +689,7 @@ class _SignUpPageWidgetState extends State<SignUpPageWidget>
                                     context.pushNamedAuth(
                                         'SignInPage', context.mounted);
                                   },
-                                  text: 'Sign Up',
+                                  text: FFAppState().vietnameseEnable ? 'Đăng Ký' : 'Sign Up',
                                   options: FFButtonOptions(
                                     width: double.infinity,
                                     height: 42.0,

@@ -53,6 +53,12 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
     super.initState();
     _model = createModel(context, () => ChatPageModel());
 
+    FFAppState().addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       setDarkModeSetting(context, ThemeMode.dark);
@@ -112,7 +118,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
           if (FFAppState().enableText2Speech) {
             await actions.textToSpeechAction(
               _model.engCorrectedOutput!,
-              true,
+              false,
             );
           }
         }
@@ -143,8 +149,12 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
 
   @override
   void dispose() {
+    FFAppState().removeListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
     _model.dispose();
-
     super.dispose();
   }
 
@@ -175,6 +185,16 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
   @override
   void didPushNext() {
     _model.isRouteVisible = false;
+  }
+
+  void _scrollToBottom() {
+    if (_model.listViewController != null) {
+      _model.listViewController!.animateTo(
+        _model.listViewController!.position.maxScrollExtent,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
@@ -234,7 +254,7 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                 alignment: AlignmentDirectional(0.0, 0.0),
                                 child: Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
-                                      15.0, 0.0, 15.0, 0.0),
+                                      10.0, 0.0, 0.0, 0.0),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment:
@@ -267,17 +287,17 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                                 EdgeInsetsDirectional.fromSTEB(
                                                     10.0, 0.0, 0.0, 0.0),
                                             child: Text(
-                                              'DPSA Chat',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        fontSize: 18.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
+                                              FFAppState().vietnameseEnable 
+                                                ? 'DPSA Chat' 
+                                                : 'DPSA Chat',
+                                              style: FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .override(
+                                                    fontFamily: 'Inter',
+                                                    fontSize: 18.0,
+                                                    letterSpacing: 0.0,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                             ),
                                           ),
                                         ].divide(SizedBox(width: 12.0)),
@@ -1114,8 +1134,9 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                       TextCapitalization.sentences,
                                   obscureText: false,
                                   decoration: InputDecoration(
-                                    hintText:
-                                        'Type your text here to convert to video...',
+                                    hintText: FFAppState().vietnameseEnable 
+                                      ? 'Nhập văn bản của bạn để chuyển thành video...'
+                                      : 'Type your text here to convert to video...',
                                     hintStyle: FlutterFlowTheme.of(context)
                                         .bodySmall
                                         .override(
@@ -1204,6 +1225,11 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                       _model.userInputTextController.text);
                                   _model.messageIndex = _model.messageIndex + 1;
                                   safeSetState(() {});
+                                  
+                                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                                    _scrollToBottom();
+                                  });
+
                                   if (functions.textContained(_model
                                           .userInputTextController.text) ==
                                       '...') {
@@ -1211,6 +1237,11 @@ class _ChatPageWidgetState extends State<ChatPageWidget>
                                     _model.messageIndex =
                                         _model.messageIndex + 1;
                                     safeSetState(() {});
+                                    
+                                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                                      _scrollToBottom(); 
+                                    });
+
                                     HapticFeedback.lightImpact();
                                     _model.addToChatHistory('none');
                                     _model.messageIndex =

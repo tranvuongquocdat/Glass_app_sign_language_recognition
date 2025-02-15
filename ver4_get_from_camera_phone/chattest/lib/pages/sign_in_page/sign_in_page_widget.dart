@@ -156,7 +156,7 @@ class _SignInPageWidgetState extends State<SignInPageWidget>
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Text(
-                              'Sign In To DPSA',
+                              FFAppState().vietnameseEnable ? 'Đăng Nhập DPSA' : 'Sign In To DPSA',
                               style: FlutterFlowTheme.of(context)
                                   .headlineMedium
                                   .override(
@@ -166,7 +166,9 @@ class _SignInPageWidgetState extends State<SignInPageWidget>
                                   ),
                             ),
                             Text(
-                              'Communicate in sign language with AI',
+                              FFAppState().vietnameseEnable 
+                                ? 'Giao tiếp bằng ngôn ngữ ký hiệu với AI' 
+                                : 'Communicate in sign language with AI',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(
@@ -521,7 +523,7 @@ class _SignInPageWidgetState extends State<SignInPageWidget>
                                           'HomePage', context.mounted);
                                     }
                                   },
-                                  text: 'Sign In',
+                                  text: FFAppState().vietnameseEnable ? 'Đăng Nhập' : 'Sign In',
                                   options: FFButtonOptions(
                                     width: double.infinity,
                                     height: 42.0,
@@ -555,17 +557,6 @@ class _SignInPageWidgetState extends State<SignInPageWidget>
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    'Don’t have an account?',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          fontFamily: 'Inter',
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          letterSpacing: 0.0,
-                                        ),
-                                  ),
                                   Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         5.0, 0.0, 0.0, 0.0),
@@ -578,18 +569,16 @@ class _SignInPageWidgetState extends State<SignInPageWidget>
                                         context.pushNamed('signUpPage');
                                       },
                                       child: Text(
-                                        'Sign Up',
+                                        FFAppState().vietnameseEnable ? 'Đăng Ký' : 'Sign Up',
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
                                               fontFamily: 'Inter',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primary,
+                                              color: FlutterFlowTheme.of(context)
+                                                  .primary,
                                               letterSpacing: 0.0,
                                               fontWeight: FontWeight.w600,
-                                              decoration:
-                                                  TextDecoration.underline,
+                                              decoration: TextDecoration.underline,
                                             ),
                                       ),
                                     ),

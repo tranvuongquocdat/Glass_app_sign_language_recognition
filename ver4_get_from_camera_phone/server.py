@@ -65,7 +65,7 @@ async def process_video(request: VideoRequest):
                 if not ret:
                     break
 
-                frame = cv2.resize(frame, (640, 640))
+                # frame = cv2.resize(frame, (640, 640))
 
                 results_frame = model(frame, verbose=False)
                 frame_classes = []
