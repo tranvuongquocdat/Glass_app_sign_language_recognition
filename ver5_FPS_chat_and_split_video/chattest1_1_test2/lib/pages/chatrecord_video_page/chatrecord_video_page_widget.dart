@@ -225,7 +225,7 @@ class _ChatrecordVideoPageWidgetState extends State<ChatrecordVideoPageWidget>
                                 );
 
                                 context.pushNamed(
-                                  'FPSchatPage',
+                                  'chatPage',
                                   queryParameters: {
                                     'serverResponse': serializeParam(
                                       _model.serverOutput,

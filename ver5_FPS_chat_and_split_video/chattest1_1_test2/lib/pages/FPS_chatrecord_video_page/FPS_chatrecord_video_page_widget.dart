@@ -70,8 +70,9 @@ class _FPSChatrecordVideoPageWidgetState extends State<FPSChatrecordVideoPageWid
 
   @override
   void dispose() {
+    // Ensure we properly clean up resources
+    FFAppState().makePhoto = false;  // Reset recording state
     _model.dispose();
-
     super.dispose();
   }
 
@@ -84,24 +85,36 @@ class _FPSChatrecordVideoPageWidgetState extends State<FPSChatrecordVideoPageWid
 
   @override
   void didPopNext() {
-    safeSetState(() => _model.isRouteVisible = true);
+    safeSetState(() {
+      _model.isRouteVisible = true;
+      // Force rebuild FPSVideoWidget
+      setState(() {});
+    });
     debugLogWidgetClass(_model);
   }
 
   @override
   void didPush() {
-    safeSetState(() => _model.isRouteVisible = true);
+    safeSetState(() {
+      _model.isRouteVisible = true;
+      // Force rebuild FPSVideoWidget
+      setState(() {});
+    });
     debugLogWidgetClass(_model);
   }
 
   @override
   void didPop() {
     _model.isRouteVisible = false;
+    // Clean up resources when leaving page
+    FFAppState().makePhoto = false;
   }
 
   @override
   void didPushNext() {
     _model.isRouteVisible = false;
+    // Clean up resources when leaving page
+    FFAppState().makePhoto = false;
   }
 
   @override
@@ -135,10 +148,11 @@ class _FPSChatrecordVideoPageWidgetState extends State<FPSChatrecordVideoPageWid
               Container(
                 width: MediaQuery.sizeOf(context).width * 1.0,
                 height: MediaQuery.sizeOf(context).height * 0.7,
-                child: FPSVideoWidget(
+                child: _model.isRouteVisible ? FPSVideoWidget(
+                  key: ValueKey<bool>(_model.isRouteVisible), // Add key to force rebuild
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: MediaQuery.sizeOf(context).height * 0.7,
-                ),
+                ) : Container(),
               ),
               Container(
                 decoration: BoxDecoration(),
@@ -218,26 +232,32 @@ class _FPSChatrecordVideoPageWidgetState extends State<FPSChatrecordVideoPageWid
                                   FFAppState().makePhoto = false;
                                 });
 
-                                await Future.delayed(const Duration(milliseconds: 200));
+                                // Add delay to ensure connection is properly closed
+                                await Future.delayed(const Duration(milliseconds: 100));
                                 
-                                context.pushNamed(
-                                  'chatPage',
-                                  queryParameters: {
-                                    'serverResponse': serializeParam(
-                                      FFAppState().serverOutput,
-                                      ParamType.String,
-                                    ),
-                                    'chatHistory': serializeParam(
-                                      _model.chatHistory,
-                                      ParamType.String,
-                                      isList: true,
-                                    ),
-                                    'messageIndex': serializeParam(
-                                      _model.messageIndex,
-                                      ParamType.int,
-                                    ),
-                                  }.withoutNulls,
-                                );
+                                try {
+                                  await context.pushNamed(
+                                    'FPSchatPage',
+                                    queryParameters: {
+                                      'serverResponse': serializeParam(
+                                        FFAppState().serverOutput,
+                                        ParamType.String,
+                                      ),
+                                      'chatHistory': serializeParam(
+                                        _model.chatHistory,
+                                        ParamType.String,
+                                        isList: true,
+                                      ),
+                                      'messageIndex': serializeParam(
+                                        _model.messageIndex,
+                                        ParamType.int,
+                                      ),
+                                    }.withoutNulls,
+                                  );
+                                } catch (e) {
+                                  print('Navigation error: $e');
+                                  // Handle error appropriately
+                                }
 
                                 safeSetState(() {});
                               },
