@@ -435,7 +435,7 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                             ParamType.String,
                                             isList: true,
                                             link:
-                                                'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatPage',
+                                                'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=FPSchatPage',
                                             name: 'String',
                                             nullable: false,
                                           );
@@ -878,7 +878,7 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                                                 ParamType
                                                                     .Document,
                                                                 link:
-                                                                    'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=chatPage',
+                                                                    'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=FPSchatPage',
                                                                 name:
                                                                     'sign_language_video',
                                                                 nullable: false,
