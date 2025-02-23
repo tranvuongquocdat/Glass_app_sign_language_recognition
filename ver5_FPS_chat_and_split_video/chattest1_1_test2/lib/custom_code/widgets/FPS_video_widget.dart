@@ -46,7 +46,7 @@ class _FPSVideoWidgetState extends State<FPSVideoWidget> {
     final cameras = await availableCameras();
     if (cameras.isEmpty) return;
 
-    controller = CameraController(cameras[0], ResolutionPreset.medium);
+    controller = CameraController(cameras[0], ResolutionPreset.high);
     await controller?.initialize();
     if (mounted) setState(() {});
   }
