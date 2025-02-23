@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "631744777818",
+    "project_id": "chattest-48067",
+    "storage_bucket": "chattest-48067.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631744777818:android:2d88d47b89512ebf845263",
+        "android_client_info": {
+          "package_name": "com.mycompany.chattest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAesq0Abem7ba-LLQlGJhDLOPjy-981vgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

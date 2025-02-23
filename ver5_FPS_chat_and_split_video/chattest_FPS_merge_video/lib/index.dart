@@ -1,0 +1,19 @@
+// Export pages
+export '/pages/home_page/home_page_widget.dart' show HomePageWidget;
+export '/pages/enter_server_i_p_address_page/enter_server_i_p_address_page_widget.dart'
+    show EnterServerIPAddressPageWidget;
+export '/pages/FPS_enter_server_i_p_address_page copy/FPS_enter_server_i_p_address_page_widget.dart'
+    show FPSEnterServerIPAddressPageWidget;
+export '/pages/chat_page/chat_page_widget.dart' show ChatPageWidget;
+export '/pages/FPS_chat_page/FPS_chat_page_widget.dart' show FPSChatPageWidget;
+export '/pages/signlanguage_video/signlanguage_video_widget.dart'
+    show SignlanguageVideoWidget;
+export '/pages/sign_in_page/sign_in_page_widget.dart' show SignInPageWidget;
+export '/pages/sign_up_page/sign_up_page_widget.dart' show SignUpPageWidget;
+export '/pages/test_speak_to_text/test_speak_to_text_widget.dart'
+    show TestSpeakToTextWidget;
+export '/pages/chatrecord_video_page/chatrecord_video_page_widget.dart'
+    show ChatrecordVideoPageWidget;
+export '/pages/FPS_chatrecord_video_page/FPS_chatrecord_video_page_widget.dart'
+    show FPSChatrecordVideoPageWidget;
+export '/pages/abou_us/abou_us_widget.dart' show AbouUsWidget;
