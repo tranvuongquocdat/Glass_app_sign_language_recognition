@@ -885,6 +885,7 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
 
                                                                     return CustomVideoPlayer(
                                                                       assetPaths: pathsSnapshot.data!,
+                                                                      autoPlay: false,  // Set this to true
                                                                       width: 220.0,
                                                                       height: 220.0,
                                                                       fit: BoxFit.cover,

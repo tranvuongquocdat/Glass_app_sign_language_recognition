@@ -468,6 +468,29 @@ Future<String> splitAndMatchText(BuildContext context, String inputText) async {
   try {
     print('Sending prompt to Gemini: $prompt');
     final response = await generateGeminiResponse(context, prompt);
+    
+    // Thêm bước kiểm tra từ
+    if (response.startsWith('OK|')) {
+      final words = response.substring(3).split(' + ');
+      final missingWords = <String>[];
+      
+      // Kiểm tra từng từ có trong danh sách không
+      for (final word in words) {
+        final trimmedWord = word.trim();
+        if (!VideoConstants.wordSegments.containsKey(trimmedWord)) {
+          missingWords.add(trimmedWord);
+        }
+      }
+      
+      // Nếu có từ không tồn tại, trả về MISSING
+      if (missingWords.isNotEmpty) {
+        return 'MISSING|${missingWords.join(", ")}';
+      }
+      
+      // Nếu tất cả từ đều hợp lệ, giữ nguyên kết quả OK
+      return response;
+    }
+    
     return response;
   } catch (e) {
     print('Error in splitAndMatchText: $e');
@@ -551,7 +574,7 @@ class CustomVideoPlayer extends StatefulWidget {
     this.height,
     this.onError,
     this.fit = BoxFit.contain,
-    this.autoPlay = true,
+    this.autoPlay = false,
     this.showControls = true,
     this.borderRadius,
     super.key,
@@ -572,13 +595,14 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   @override
   void initState() {
     super.initState();
+    _isPlaying = widget.autoPlay;
     _initializeNextVideo();
   }
 
   Future<void> _initializeNextVideo() async {
     try {
       if (_currentVideoIndex >= widget.assetPaths.length) {
-        _currentVideoIndex = widget.assetPaths.length - 1;
+        _currentVideoIndex = 0;
         _hasCompletedOnce = true;
         if (_isInitialized) {
           _controller.pause();
@@ -598,11 +622,16 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
           if (_controller.value.position >= _controller.value.duration) {
             if (_currentVideoIndex < widget.assetPaths.length - 1) {
               _currentVideoIndex++;
-              _initializeNextVideo();
+              _initializeNextVideo().then((_) {
+                if (_isPlaying && mounted) {
+                  _controller.play();
+                }
+              });
             } else {
               setState(() {
                 _hasCompletedOnce = true;
                 _isPlaying = false;
+                _currentVideoIndex = 0;
               });
             }
           }
@@ -614,9 +643,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         setState(() {
           _isInitialized = true;
           _hasError = false;
-          _isPlaying = widget.autoPlay && !_hasCompletedOnce;
         });
-        if (widget.autoPlay && !_hasCompletedOnce) {
+        
+        if (_isPlaying) {
           _controller.play();
         }
       }
@@ -634,7 +663,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   void _togglePlayPause() {
     setState(() {
       _isPlaying = !_isPlaying;
-      _isPlaying ? _controller.play() : _controller.pause();
+      if (_isPlaying) {
+        _controller.play();
+      } else {
+        _controller.pause();
+      }
     });
   }
 
@@ -644,7 +677,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       _hasCompletedOnce = false;
       _isPlaying = true;
     });
-    _initializeNextVideo();
+    _initializeNextVideo().then((_) {
+      if (_isPlaying && mounted) {
+        _controller.play();
+      }
+    });
   }
 
   @override
