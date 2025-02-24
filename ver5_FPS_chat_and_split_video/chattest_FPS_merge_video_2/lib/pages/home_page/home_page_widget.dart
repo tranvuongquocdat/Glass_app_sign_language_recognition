@@ -334,7 +334,7 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                               child: Align(
                                 alignment: AlignmentDirectional(0.0, 0.0),
                                 child: Text(
-                                  FFAppState().vietnameseEnable ? 'Kiểm Tra Chuyển Giọng Nói' : 'Test speech to text',
+                                  FFAppState().vietnameseEnable ? 'Giám định tính năng' : 'Test microservice functions',
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(

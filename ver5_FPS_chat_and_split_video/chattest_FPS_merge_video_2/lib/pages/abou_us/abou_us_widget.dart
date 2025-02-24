@@ -30,7 +30,7 @@ class LanguageStrings {
       'video_library': 'Xem thư viện video: Duyệt qua các video thủ ngữ có sẵn trong ứng dụng.',
       'contribute_video': 'Đóng góp video cá nhân:',
       'contribute_steps': '- Thêm video thủ ngữ của bạn vào ứng dụng.\n- Video sẽ được đội ngũ kiểm duyệt trước khi được chuyển đổi thành video AI chính thức.',
-      'test_stt_title': 'Kiểm tra chuyển đổi giọng nói thành văn bản (Test Speech-to-Text)',
+      'test_stt_title': 'Giám định tính năng (Test Functions)',
       'test_stt_content': 'Dùng công cụ để kiểm tra khả năng nhận diện giọng nói của thiết bị, bao gồm từ và câu đơn giản.',
     },
     'en': {
@@ -52,7 +52,7 @@ class LanguageStrings {
       'video_library': 'View video library: Browse through available sign language videos in the app.',
       'contribute_video': 'Contribute Personal Videos:',
       'contribute_steps': '- Add your sign language videos to the app.\n- Videos will be reviewed by the moderation team before being converted to official AI videos.',
-      'test_stt_title': 'Test Speech-to-Text',
+      'test_stt_title': 'Test Functions',
       'test_stt_content': 'Use the tool to test your device\'s voice recognition capabilities, including simple words and sentences.',
     }
   };

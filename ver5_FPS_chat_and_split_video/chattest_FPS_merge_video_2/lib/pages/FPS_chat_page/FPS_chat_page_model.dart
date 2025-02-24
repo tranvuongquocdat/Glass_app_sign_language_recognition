@@ -86,6 +86,14 @@ class FPSChatPageModel extends FlutterFlowModel<FPSChatPageWidget> {
 
   String? get vieCorretedOutput => _vieCorretedOutput;
 
+  String? _splitTextOutput;
+  set splitTextOutput(String? value) {
+    _splitTextOutput = value;
+    debugLogWidgetClass(this);
+  }
+
+  String? get splitTextOutput => _splitTextOutput;
+
   // Stores action output result for [Gemini - Generate Text] action in chatPage widget.
   String? _engCorrectedOutput;
   set engCorrectedOutput(String? value) {
@@ -233,6 +241,12 @@ class FPSChatPageModel extends FlutterFlowModel<FPSChatPageWidget> {
                 'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=FPSchatPage',
             name: 'String',
             nullable: true,
+          ),
+          'splitTextOutput': debugSerializeParam(
+            splitTextOutput,
+            ParamType.String,
+            link:
+                'https://app.flutterflow.io/project/chattest-fwf3ic?tab=uiBuilder&page=FPSchatPage',
           )
         },
         generatorVariables: debugGeneratorVariables,

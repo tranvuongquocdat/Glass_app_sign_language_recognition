@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:math' as math;
+import 'package:ffmpeg_kit_flutter/return_code.dart';
+
 import '/backend/gemini/gemini.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +13,10 @@ import 'uploaded_file.dart';
 import '/backend/backend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '/auth/firebase_auth/auth_util.dart';
+import 'package:video_player/video_player.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'dart:io'; // Added for File operations
+import 'package:path_provider/path_provider.dart';
 
 class VideoConstants {
   static const Map<String, String> wordSegments = 
@@ -424,27 +430,24 @@ class VideoConstants {
 
 Future<String> generateGeminiResponse(BuildContext context, String prompt) async {
   try {
-    // Gọi Gemini API tương tự như trong FPS_chat_page
-    final response = await geminiGenerateText(
-      context,
-      prompt,
-    );
-    return response ?? 'Error: No response';
+    final response = await geminiGenerateText(context, prompt);
+    if (response == null) {
+      print('Gemini API returned null');
+      return 'Error: No response from Gemini';
+    }
+    return response;
   } catch (e) {
+    print('Error in generateGeminiResponse: $e');
     return 'Error: $e';
   }
 }
 
 Future<String> splitAndMatchText(BuildContext context, String inputText) async {
-  // Get available words from VideoConstants
   final availableWords = VideoConstants.wordSegments.keys.toList();
-  
-  // Format available words list for prompt
   final wordsListStr = availableWords.map((w) => '"$w"').join(', ');
 
-  // Construct prompt
   final prompt = '''
-    Hãy chuyển câu sau thành chuỗi các từ/ câu đơn giản nhất, chỉ sử dụng các từ/ câu có sẵn: [$wordsListStr]
+    Hãy chuyển câu sau thành chuỗi các từ/câu đơn giản nhất, chỉ sử dụng các từ/câu có sẵn: [$wordsListStr]
     
     Câu gốc: $inputText
     
@@ -453,26 +456,253 @@ Future<String> splitAndMatchText(BuildContext context, String inputText) async {
     2. Giữ các từ quan trọng nhất, bỏ qua từ không cần thiết
     3. Đảm bảo nghĩa của câu vẫn được giữ nguyên
     4. Chỉ sử dụng các từ trong danh sách đã cho
-    5. Lưu ý: Trong danh sách có cả từ đơn và từ ghép, và có một số câu hoàn chỉnh (vd: "bắc cực", "ảnh hưởng", "bạn làm nghề gì")
+    5. Lưu ý: Trong danh sách có cả từ đơn và từ ghép, và có một số câu hoàn chỉnh
     6. Nếu thiếu từ quan trọng, hãy chỉ ra từ đó
     7. Ưu tiên sử dụng câu hoặc từ ghép, nếu không có mới sử dụng từ đơn.
     
     Trả về kết quả dạng:
-    - Nếu đủ từ: "OK|từ1 + từ2 + từ3" (các từ được phân tách bởi dấu " + ")
+    - Nếu đủ từ: "OK|từ1 + từ2 + từ3"
     - Nếu thiếu từ: "MISSING|từ1, từ2,..."
   ''';
 
   try {
-    // print('Prompt: $prompt');
-    // Call Gemini API with the proper context
-    final response = await geminiGenerateText(
-      context, // BuildContext from the widget tree
-      prompt,
-    );
-    return response ?? 'Error: No response';
+    print('Sending prompt to Gemini: $prompt');
+    final response = await generateGeminiResponse(context, prompt);
+    return response;
   } catch (e) {
+    print('Error in splitAndMatchText: $e');
     return 'Error: $e';
   }
 }
 
+Future<List<String>> parseVideoPathsFromSplitText(String splitTextOutput) async {
+  if (!splitTextOutput.startsWith('OK|')) {
+    print('Invalid split text output: $splitTextOutput');
+    throw Exception('Invalid split text output format');
+  }
 
+  final wordsString = splitTextOutput.substring(3);
+  final words = wordsString.split(' + ');
+
+  final videoPaths = words.map((word) {
+    final trimmedWord = word.trim();
+    print('Mapping word: "$trimmedWord"');
+    final path = VideoConstants.wordSegments[trimmedWord];
+    if (path == null) {
+      print('Video path not found for word: $trimmedWord');
+      throw Exception('Video path not found for word: $trimmedWord');
+    }
+    return path;
+  }).toList();
+
+  return videoPaths;
+}
+
+Future<String> mergeVideos(List<String> videoPaths) async {
+  try {
+    final directory = await getTemporaryDirectory();
+    final outputPath = '${directory.path}/merged_video.mp4';
+    final listFilePath = '${directory.path}/video_list.txt';
+    final listFile = File(listFilePath);
+
+    // Tạo danh sách file cho FFmpeg
+    final fileContent = videoPaths.map((path) => "file '$path'").join('\n');
+    await listFile.writeAsString(fileContent);
+
+    // Thực thi lệnh FFmpeg để ghép video
+    final command = '-f concat -safe 0 -i $listFilePath -c copy $outputPath';
+    print('Executing FFmpeg command: $command');
+    final session = await FFmpegKit.execute(command);
+    final returnCode = await session.getReturnCode();
+
+    if (ReturnCode.isSuccess(returnCode!)) {
+      final logs = await session.getAllLogsAsString();
+      print('FFmpeg failed: $logs');
+      throw Exception('Video merge failed: $logs');
+    }
+
+    // Xóa file tạm
+    if (await listFile.exists()) {
+      await listFile.delete();
+    }
+
+    print('Video merged successfully: $outputPath');
+    return outputPath;
+  } catch (e) {
+    print('Error merging videos: $e');
+    rethrow;
+  }
+}
+
+// Thay thế class VideoPlayerScreen cũ bằng CustomVideoPlayer mới
+class CustomVideoPlayer extends StatefulWidget {
+  final List<String> assetPaths;
+  final double? width;
+  final double? height;
+  final Function(String)? onError;
+  final BoxFit fit;
+
+  const CustomVideoPlayer({
+    required this.assetPaths,
+    this.width,
+    this.height,
+    this.onError,
+    this.fit = BoxFit.contain,
+    super.key,
+  });
+
+  @override
+  State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
+}
+
+class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+  late VideoPlayerController _controller;
+  bool _isInitialized = false;
+  bool _hasError = false;
+  int _currentVideoIndex = 0;
+  bool _hasCompletedOnce = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeNextVideo();
+  }
+
+  Future<void> _initializeNextVideo() async {
+    try {
+      if (_currentVideoIndex >= widget.assetPaths.length) {
+        _currentVideoIndex = 0;
+        _hasCompletedOnce = true;
+        if (_isInitialized) {
+          _controller.pause();
+        }
+        return;
+      }
+
+      if (_isInitialized) {
+        await _controller.dispose();
+      }
+
+      _controller = VideoPlayerController.asset(widget.assetPaths[_currentVideoIndex])
+        ..addListener(() {
+          if (_controller.value.position >= _controller.value.duration) {
+            _currentVideoIndex++;
+            _initializeNextVideo();
+          }
+        });
+
+      await _controller.initialize();
+      
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+          _hasError = false;
+        });
+        _controller.play();
+      }
+    } catch (e) {
+      print('Error initializing video: $e');
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+        });
+      }
+      widget.onError?.call(e.toString());
+    }
+  }
+
+  void _restartPlayback() {
+    if (_hasCompletedOnce) {
+      setState(() {
+        _currentVideoIndex = 0;
+        _hasCompletedOnce = false;
+      });
+      _initializeNextVideo();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: widget.width,
+      height: widget.height,
+      child: GestureDetector(
+        onTap: _restartPlayback,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            if (_hasError)
+              const Center(child: Text('Error loading video'))
+            else if (!_isInitialized)
+              const Center(child: CircularProgressIndicator())
+            else
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: FittedBox(
+                  fit: widget.fit,
+                  child: SizedBox(
+                    width: _controller.value.size.width,
+                    height: _controller.value.size.height,
+                    child: VideoPlayer(_controller),
+                  ),
+                ),
+              ),
+            if (_hasCompletedOnce)
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.replay, color: Colors.white),
+                  onPressed: _restartPlayback,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Cập nhật hàm mergeAndPlayVideos để sử dụng CustomVideoPlayer
+Future<void> mergeAndPlayVideos(BuildContext context, String splitTextOutput) async {
+  try {
+    print('Starting video playback process...');
+    final assetPaths = await parseVideoPathsFromSplitText(splitTextOutput);
+    print('Asset video paths: $assetPaths');
+
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          child: CustomVideoPlayer(
+            assetPaths: assetPaths,
+            width: 300, // Có thể tùy chỉnh
+            height: 200, // Có thể tùy chỉnh
+            fit: BoxFit.contain,
+            onError: (error) {
+              print('Video player error: $error');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error playing video: $error')),
+              );
+            },
+          ),
+        ),
+      );
+    }
+  } catch (e) {
+    print('Error in playVideos: $e');
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error processing videos: $e')),
+      );
+    }
+  }
+}

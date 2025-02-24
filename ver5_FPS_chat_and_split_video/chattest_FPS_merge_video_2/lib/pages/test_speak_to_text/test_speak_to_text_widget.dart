@@ -1,4 +1,5 @@
 import 'package:chattest/flutter_flow/FPS_custom_functions.dart';
+import 'package:ffmpeg_kit_flutter/return_code.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -11,6 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'test_speak_to_text_model.dart';
+import 'package:video_player/video_player.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'dart:io';
+import 'package:flutter/services.dart' show ByteData, rootBundle;
+
 export 'test_speak_to_text_model.dart';
 
 class LanguageStrings {
@@ -570,6 +577,58 @@ class _TestSpeakToTextWidgetState extends State<TestSpeakToTextWidget>
                                               splitOutput,
                                               style: FlutterFlowTheme.of(context).bodyMedium,
                                             ),
+                                    ),
+                                  ],
+                                  if (splitOutput.startsWith('OK|')) ...[
+                                    SizedBox(height: 16.0),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        FFButtonWidget(
+                                          onPressed: () async {
+                                            await mergeAndPlayVideos(context, splitOutput);
+                                          },
+                                          text: 'Play Sign Language Videos',
+                                          options: FFButtonOptions(
+                                            width: 200.0,
+                                            height: 40.0,
+                                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                            color: FlutterFlowTheme.of(context).secondary,
+                                            textStyle: FlutterFlowTheme.of(context).titleSmall.copyWith(
+                                              color: Colors.white,
+                                            ),
+                                            elevation: 2.0,
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 16.0),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 200.0,
+                                      decoration: BoxDecoration(
+                                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                                        borderRadius: BorderRadius.circular(8.0),
+                                        border: Border.all(
+                                          color: FlutterFlowTheme.of(context).alternate,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: AspectRatio(
+                                          aspectRatio: 16 / 9,
+                                          child: Container(
+                                            color: Colors.black,
+                                            child: const Center(
+                                              child: Text(
+                                                'Video Player Area',
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ],

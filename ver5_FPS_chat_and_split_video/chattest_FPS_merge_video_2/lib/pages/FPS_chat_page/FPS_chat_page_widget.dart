@@ -10,6 +10,7 @@ import 'dart:math';
 import 'dart:ui';
 import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
+import '/flutter_flow/FPS_custom_functions.dart' as FPS_functions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:flutter/material.dart';
@@ -1168,15 +1169,25 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                 _model.userInputTextController.text != '') {
                               HapticFeedback.heavyImpact();
                               _model.addToChatHistory(_model.userInputTextController.text);
-                              _model.messageIndex = _model.messageIndex + 1;
+                              // _model.messageIndex = _model.messageIndex + 1;
                               safeSetState(() {});
                               
                               SchedulerBinding.instance.addPostFrameCallback((_) {
                                 _scrollToBottom();
                               });
 
-                              if (functions.textContained(_model.userInputTextController.text) ==
-                                  '...') {
+                              await FPS_functions.splitAndMatchText(context, _model.userInputTextController.text).then((value) {
+                                _model.splitTextOutput = value;
+                              });
+
+                              if (_model.splitTextOutput?.startsWith('MISSING|') ?? false) {
+                                _model.updateChatHistoryAtIndex(
+                                  _model.messageIndex,
+                                  (_) => _model.userInputTextController.text + '\n' + _model.splitTextOutput!,
+                                );
+                                _model.messageIndex = _model.messageIndex + 1;
+                                safeSetState(() {});
+
                                 _model.addToChatHistory('...');
                                 _model.messageIndex = _model.messageIndex + 1;
                                 safeSetState(() {});
@@ -1192,14 +1203,21 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                 
                                 SchedulerBinding.instance.addPostFrameCallback((_) {
                                   _scrollToBottom();
-                                });
+                                }); 
                                 
                                 safeSetState(() {
                                   _model.userInputTextController?.clear();
                                 });
                               } else {
+                                _model.updateChatHistoryAtIndex(
+                                  _model.messageIndex,
+                                  (_) => _model.userInputTextController.text + '\n' + _model.splitTextOutput!,
+                                );
+                                _model.messageIndex = _model.messageIndex + 1;
+                                safeSetState(() {});
+
                                 _model.addToChatHistory(
-                                    functions.textContained(_model.userInputTextController.text));
+                                    functions.textContained(_model.splitTextOutput!));
                                 _model.messageIndex = _model.messageIndex + 1;
                                 safeSetState(() {});
                                 
