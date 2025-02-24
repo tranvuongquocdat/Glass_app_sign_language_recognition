@@ -541,6 +541,9 @@ class CustomVideoPlayer extends StatefulWidget {
   final double? height;
   final Function(String)? onError;
   final BoxFit fit;
+  final bool autoPlay;
+  final bool showControls;
+  final BorderRadius? borderRadius;
 
   const CustomVideoPlayer({
     required this.assetPaths,
@@ -548,6 +551,9 @@ class CustomVideoPlayer extends StatefulWidget {
     this.height,
     this.onError,
     this.fit = BoxFit.contain,
+    this.autoPlay = true,
+    this.showControls = true,
+    this.borderRadius,
     super.key,
   });
 
@@ -561,6 +567,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   bool _hasError = false;
   int _currentVideoIndex = 0;
   bool _hasCompletedOnce = false;
+  bool _isPlaying = false;
 
   @override
   void initState() {
@@ -571,10 +578,13 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   Future<void> _initializeNextVideo() async {
     try {
       if (_currentVideoIndex >= widget.assetPaths.length) {
-        _currentVideoIndex = 0;
+        _currentVideoIndex = widget.assetPaths.length - 1;
         _hasCompletedOnce = true;
         if (_isInitialized) {
           _controller.pause();
+          setState(() {
+            _isPlaying = false;
+          });
         }
         return;
       }
@@ -586,8 +596,15 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       _controller = VideoPlayerController.asset(widget.assetPaths[_currentVideoIndex])
         ..addListener(() {
           if (_controller.value.position >= _controller.value.duration) {
-            _currentVideoIndex++;
-            _initializeNextVideo();
+            if (_currentVideoIndex < widget.assetPaths.length - 1) {
+              _currentVideoIndex++;
+              _initializeNextVideo();
+            } else {
+              setState(() {
+                _hasCompletedOnce = true;
+                _isPlaying = false;
+              });
+            }
           }
         });
 
@@ -597,8 +614,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         setState(() {
           _isInitialized = true;
           _hasError = false;
+          _isPlaying = widget.autoPlay && !_hasCompletedOnce;
         });
-        _controller.play();
+        if (widget.autoPlay && !_hasCompletedOnce) {
+          _controller.play();
+        }
       }
     } catch (e) {
       print('Error initializing video: $e');
@@ -611,14 +631,20 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     }
   }
 
+  void _togglePlayPause() {
+    setState(() {
+      _isPlaying = !_isPlaying;
+      _isPlaying ? _controller.play() : _controller.pause();
+    });
+  }
+
   void _restartPlayback() {
-    if (_hasCompletedOnce) {
-      setState(() {
-        _currentVideoIndex = 0;
-        _hasCompletedOnce = false;
-      });
-      _initializeNextVideo();
-    }
+    setState(() {
+      _currentVideoIndex = 0;
+      _hasCompletedOnce = false;
+      _isPlaying = true;
+    });
+    _initializeNextVideo();
   }
 
   @override
@@ -633,17 +659,28 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       width: widget.width,
       height: widget.height,
       child: GestureDetector(
-        onTap: _restartPlayback,
+        onTap: widget.showControls ? _togglePlayPause : null,
         child: Stack(
           alignment: Alignment.center,
           children: [
             if (_hasError)
-              const Center(child: Text('Error loading video'))
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.error_outline, color: Colors.red, size: 48),
+                    SizedBox(height: 8),
+                    Text('Error loading video', 
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              )
             else if (!_isInitialized)
               const Center(child: CircularProgressIndicator())
             else
               ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
                 child: FittedBox(
                   fit: widget.fit,
                   child: SizedBox(
@@ -653,15 +690,19 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                   ),
                 ),
               ),
-            if (_hasCompletedOnce)
+            if (widget.showControls && (_hasCompletedOnce || !_isPlaying))
               Container(
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.replay, color: Colors.white),
-                  onPressed: _restartPlayback,
+                  icon: Icon(
+                    _hasCompletedOnce ? Icons.replay : 
+                    _isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.white,
+                  ),
+                  onPressed: _hasCompletedOnce ? _restartPlayback : _togglePlayPause,
                 ),
               ),
           ],
@@ -671,38 +712,16 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   }
 }
 
-// Cập nhật hàm mergeAndPlayVideos để sử dụng CustomVideoPlayer
-Future<void> mergeAndPlayVideos(BuildContext context, String splitTextOutput) async {
+// Cập nhật hàm mergeAndPlayVideos để trả về danh sách đường dẫn video
+Future<List<String>> getSignLanguageVideoPaths(String splitTextOutput) async {
   try {
-    print('Starting video playback process...');
-    final assetPaths = await parseVideoPathsFromSplitText(splitTextOutput);
-    print('Asset video paths: $assetPaths');
-
-    if (context.mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => Dialog(
-          child: CustomVideoPlayer(
-            assetPaths: assetPaths,
-            width: 300, // Có thể tùy chỉnh
-            height: 200, // Có thể tùy chỉnh
-            fit: BoxFit.contain,
-            onError: (error) {
-              print('Video player error: $error');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error playing video: $error')),
-              );
-            },
-          ),
-        ),
-      );
+    print('Parsing video paths from split text...');
+    if (!splitTextOutput.startsWith('OK|')) {
+      throw Exception('Invalid split text output format');
     }
+    return await parseVideoPathsFromSplitText(splitTextOutput);
   } catch (e) {
-    print('Error in playVideos: $e');
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error processing videos: $e')),
-      );
-    }
+    print('Error getting video paths: $e');
+    rethrow;
   }
 }

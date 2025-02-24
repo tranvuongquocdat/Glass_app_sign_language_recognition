@@ -116,7 +116,7 @@ String textContained(String inputString) {
 
   /// Check if any word in the list is contained in the input string
   for (String word in VideoConstants._normalizedWordList) {
-    print('Checking word: $word');
+    // print('Checking word: $word');
     if (normalizedInput.contains(word)) {
       print('Found match: $word');
       // Tìm key tương ứng trong các map videos

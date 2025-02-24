@@ -552,83 +552,80 @@ class _TestSpeakToTextWidgetState extends State<TestSpeakToTextWidget>
                                         ),
                                       ),
                                       child: splitOutput.startsWith('OK|')
-                                          ? Wrap(
-                                              spacing: 8.0,
-                                              runSpacing: 8.0,
-                                              children: splitOutput
-                                                  .substring(3)
-                                                  .split(' + ')
-                                                  .map((word) => Container(
-                                                        padding: EdgeInsets.symmetric(
-                                                          horizontal: 12.0,
-                                                          vertical: 6.0,
-                                                        ),
-                                                        decoration: BoxDecoration(
-                                                          color: FlutterFlowTheme.of(context)
-                                                              .primary
-                                                              .withOpacity(0.1),
-                                                          borderRadius: BorderRadius.circular(16.0),
-                                                        ),
-                                                        child: Text(word),
-                                                      ))
-                                                  .toList(),
+                                          ? Column(
+                                              children: [
+                                                Wrap(
+                                                  spacing: 8.0,
+                                                  runSpacing: 8.0,
+                                                  children: splitOutput
+                                                      .substring(3)
+                                                      .split(' + ')
+                                                      .map((word) => Container(
+                                                            padding: EdgeInsets.symmetric(
+                                                              horizontal: 12.0,
+                                                              vertical: 6.0,
+                                                            ),
+                                                            decoration: BoxDecoration(
+                                                              color: FlutterFlowTheme.of(context)
+                                                                  .primary
+                                                                  .withOpacity(0.1),
+                                                              borderRadius: BorderRadius.circular(16.0),
+                                                            ),
+                                                            child: Text(word),
+                                                          ))
+                                                      .toList(),
+                                                ),
+                                                SizedBox(height: 16.0),
+                                                Container(
+                                                  width: double.infinity,
+                                                  height: 200.0,
+                                                  decoration: BoxDecoration(
+                                                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                    borderRadius: BorderRadius.circular(8.0),
+                                                    border: Border.all(
+                                                      color: FlutterFlowTheme.of(context).alternate,
+                                                    ),
+                                                  ),
+                                                  child: FutureBuilder<List<String>>(
+                                                    future: getSignLanguageVideoPaths(splitOutput),
+                                                    builder: (context, snapshot) {
+                                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                                        return Center(child: CircularProgressIndicator());
+                                                      }
+                                                      if (snapshot.hasError) {
+                                                        return Center(
+                                                          child: Text(
+                                                            'Error loading videos: ${snapshot.error}',
+                                                            style: TextStyle(color: Colors.red),
+                                                          ),
+                                                        );
+                                                      }
+                                                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                                        return Center(
+                                                          child: Text('No videos available'),
+                                                        );
+                                                      }
+                                                      return CustomVideoPlayer(
+                                                        assetPaths: snapshot.data!,
+                                                        fit: BoxFit.contain,
+                                                        autoPlay: true,
+                                                        showControls: true,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        onError: (error) {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(content: Text('Error playing video: $error')),
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
                                             )
                                           : Text(
                                               splitOutput,
                                               style: FlutterFlowTheme.of(context).bodyMedium,
                                             ),
-                                    ),
-                                  ],
-                                  if (splitOutput.startsWith('OK|')) ...[
-                                    SizedBox(height: 16.0),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        FFButtonWidget(
-                                          onPressed: () async {
-                                            await mergeAndPlayVideos(context, splitOutput);
-                                          },
-                                          text: 'Play Sign Language Videos',
-                                          options: FFButtonOptions(
-                                            width: 200.0,
-                                            height: 40.0,
-                                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                            color: FlutterFlowTheme.of(context).secondary,
-                                            textStyle: FlutterFlowTheme.of(context).titleSmall.copyWith(
-                                              color: Colors.white,
-                                            ),
-                                            elevation: 2.0,
-                                            borderRadius: BorderRadius.circular(8.0),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 16.0),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 200.0,
-                                      decoration: BoxDecoration(
-                                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        border: Border.all(
-                                          color: FlutterFlowTheme.of(context).alternate,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: AspectRatio(
-                                          aspectRatio: 16 / 9,
-                                          child: Container(
-                                            color: Colors.black,
-                                            child: const Center(
-                                              child: Text(
-                                                'Video Player Area',
-                                                style: TextStyle(color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
                                     ),
                                   ],
                                 ],

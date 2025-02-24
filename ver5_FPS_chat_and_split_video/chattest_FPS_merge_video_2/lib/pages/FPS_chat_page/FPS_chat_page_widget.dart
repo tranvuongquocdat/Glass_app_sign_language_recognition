@@ -1,3 +1,5 @@
+import 'package:chattest/flutter_flow/FPS_custom_functions.dart';
+
 import '/backend/backend.dart';
 import '/backend/gemini/gemini.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -863,12 +865,35 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                                                   BorderRadius
                                                                       .circular(
                                                                           8.0),
-                                                              child: Image
-                                                                  .asset(functions.getRelativeVideo(chatItem),
+                                                              child: Container(
                                                                 width: 220.0,
                                                                 height: 220.0,
-                                                                fit: BoxFit
-                                                                    .cover,
+                                                                child: FutureBuilder<List<String>>(
+                                                                  future: FPS_functions.parseVideoPathsFromSplitText(chatItem),
+                                                                  builder: (context, pathsSnapshot) {
+                                                                    if (pathsSnapshot.connectionState == ConnectionState.waiting) {
+                                                                      return const Center(
+                                                                        child: CircularProgressIndicator(),
+                                                                      );
+                                                                    }
+
+                                                                    if (pathsSnapshot.hasError || !pathsSnapshot.hasData) {
+                                                                      return Center(
+                                                                        child: Text('Error: ${pathsSnapshot.error ?? 'No video paths'}'),
+                                                                      );
+                                                                    }
+
+                                                                    return CustomVideoPlayer(
+                                                                      assetPaths: pathsSnapshot.data!,
+                                                                      width: 220.0,
+                                                                      height: 220.0,
+                                                                      fit: BoxFit.cover,
+                                                                      onError: (error) {
+                                                                        print('Video player error: $error');
+                                                                      },
+                                                                    );
+                                                                  },
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -991,11 +1016,15 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                   if (FFAppState().speechToTextOutput != null &&
                                       FFAppState().speechToTextOutput != '') {
                                     HapticFeedback.heavyImpact();
-                                    if (functions.textContained(
-                                            FFAppState().speechToTextOutput) ==
-                                        '...') {
+
+                                    await FPS_functions.splitAndMatchText(context, FFAppState().speechToTextOutput).then((value) {
+                                        _model.splitTextOutput = value;
+                                    });
+
+                                    if (_model.splitTextOutput != null && _model.splitTextOutput!.startsWith('MISSING|')) {
+
                                       _model.addToChatHistory(
-                                          FFAppState().speechToTextOutput);
+                                          FFAppState().speechToTextOutput + '\n' + _model.splitTextOutput!);
                                       _model.messageIndex =
                                           _model.messageIndex + 1;
                                       safeSetState(() {});
@@ -1029,19 +1058,18 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                         _model.userInputTextController?.clear();
                                       });
                                     } else {
-                                      _model.addToChatHistory(
-                                          functions.textContained(
-                                              FFAppState().speechToTextOutput));
+                                      _model.addToChatHistory(FFAppState().speechToTextOutput + '\n' + _model.splitTextOutput!);
                                       _model.messageIndex =
                                           _model.messageIndex + 1;
                                       safeSetState(() {});
-                                      _model.addToChatHistory(
-                                          functions.textContained(
-                                              FFAppState().speechToTextOutput));
+
+                                      _model.addToChatHistory(_model.splitTextOutput!);
                                       _model.messageIndex =
                                           _model.messageIndex + 1;
                                       safeSetState(() {});
+
                                       HapticFeedback.lightImpact();
+
                                       _model.addToChatHistory('none');
                                       _model.messageIndex =
                                           _model.messageIndex + 1;
@@ -1216,8 +1244,7 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                 _model.messageIndex = _model.messageIndex + 1;
                                 safeSetState(() {});
 
-                                _model.addToChatHistory(
-                                    functions.textContained(_model.splitTextOutput!));
+                                _model.addToChatHistory(_model.splitTextOutput!);
                                 _model.messageIndex = _model.messageIndex + 1;
                                 safeSetState(() {});
                                 
