@@ -424,7 +424,15 @@ class VideoConstants {
     "xúc động": "assets/SLR_video_segment/xuc_dong.mp4",
     "xuồng": "assets/SLR_video_segment/xuong.mp4",
     "y tá": "assets/SLR_video_segment/y_ta.mp4"
-}
+};
+
+static const Map<String, String> wordSegmentsEnglish = 
+  {
+    "bẩn": "assets/SLR_video_segment/baanr.mp4",
+    "áo": "assets/SLR_video_segment/ao.mp4",
+    "bắc cực": "assets/SLR_video_segment/bac_cuc.mp4",
+    "bạn khỏe không": "assets/SLR_video_segment/ban_khoe_khong.mp4",
+  }
   ;
 }
 
@@ -466,7 +474,7 @@ Future<String> splitAndMatchText(BuildContext context, String inputText) async {
   ''';
 
   try {
-    print('Sending prompt to Gemini: $prompt');
+    // print('Sending prompt to Gemini: $prompt');
     final response = await generateGeminiResponse(context, prompt);
     
     // Thêm bước kiểm tra từ
@@ -494,6 +502,62 @@ Future<String> splitAndMatchText(BuildContext context, String inputText) async {
     return response;
   } catch (e) {
     print('Error in splitAndMatchText: $e');
+    return 'Error: $e';
+  }
+}
+
+Future<String> splitAndMatchTextEnglish(BuildContext context, String inputText) async {
+  final availableWords = VideoConstants.wordSegmentsEnglish.keys.toList();
+  final wordsListStr = availableWords.map((w) => '"$w"').join(', ');
+
+  final prompt = '''
+    Convert the following sentence into the simplest sequence of sentences/words, using only the available words: [$wordsListStr]
+    
+    Original sentence: $inputText
+    
+    Rules:
+    1. Keep the subject at the beginning of the sentence
+    2. Retain the most important words, omit unnecessary ones
+    3. Ensure the meaning of the sentence remains intact
+    4. Use only the words from the provided list
+    5. Note: The list includes both single words and compound words, as well as some complete sentences (e.g., "North Pole", "affect", "what do you do for a living")
+    6. If a key word is missing, indicate it
+    7. Prioritize using complete sentences or compound words; use single words only if necessary
+
+    Return the result in this format:
+    - If all words are available: "OK|word1 + word2 + word3" (words separated by " + ")
+    - If words are missing: "MISSING|word1, word2,..."
+  ''';
+
+  try {
+    // print('Sending prompt to Gemini: $prompt');
+    final response = await generateGeminiResponse(context, prompt);
+    
+    // Thêm bước kiểm tra từ
+    if (response.startsWith('OK|')) {
+      final words = response.substring(3).split(' + ');
+      final missingWords = <String>[];
+      
+      // Kiểm tra từng từ có trong danh sách không
+      for (final word in words) {
+        final trimmedWord = word.trim();
+        if (!VideoConstants.wordSegments.containsKey(trimmedWord)) {
+          missingWords.add(trimmedWord);
+        }
+      }
+      
+      // Nếu có từ không tồn tại, trả về MISSING
+      if (missingWords.isNotEmpty) {
+        return 'MISSING|${missingWords.join(", ")}';
+      }
+      
+      // Nếu tất cả từ đều hợp lệ, giữ nguyên kết quả OK
+      return response;
+    }
+    
+    return response;
+  } catch (e) {
+    print('Error in splitAndMatchTextEnglish: $e');
     return 'Error: $e';
   }
 }

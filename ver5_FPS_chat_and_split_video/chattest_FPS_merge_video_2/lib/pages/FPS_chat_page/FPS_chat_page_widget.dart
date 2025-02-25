@@ -1018,9 +1018,15 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                       FFAppState().speechToTextOutput != '') {
                                     HapticFeedback.heavyImpact();
 
-                                    await FPS_functions.splitAndMatchText(context, FFAppState().speechToTextOutput).then((value) {
+                                    if (FFAppState().vietnameseEnable) {
+                                      await FPS_functions.splitAndMatchText(context, FFAppState().speechToTextOutput).then((value) {
                                         _model.splitTextOutput = value;
-                                    });
+                                      });
+                                    } else {
+                                      await FPS_functions.splitAndMatchTextEnglish(context, FFAppState().speechToTextOutput).then((value) {
+                                        _model.splitTextOutput = value;
+                                      });
+                                    }
 
                                     if (_model.splitTextOutput != null && _model.splitTextOutput!.startsWith('MISSING|')) {
 
@@ -1205,9 +1211,15 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                 _scrollToBottom();
                               });
 
-                              await FPS_functions.splitAndMatchText(context, _model.userInputTextController.text).then((value) {
-                                _model.splitTextOutput = value;
-                              });
+                              if (FFAppState().vietnameseEnable) {
+                                await FPS_functions.splitAndMatchText(context, _model.userInputTextController.text).then((value) {
+                                  _model.splitTextOutput = value;
+                                });
+                              } else {
+                                await FPS_functions.splitAndMatchTextEnglish(context, _model.userInputTextController.text).then((value) {
+                                  _model.splitTextOutput = value;
+                                });
+                              }
 
                               if (_model.splitTextOutput?.startsWith('MISSING|') ?? false) {
                                 _model.updateChatHistoryAtIndex(
