@@ -317,3 +317,4 @@ Future _safeInitAsync(Function() initializeField) async {
     await initializeField();
   } catch (_) {}
 }
+

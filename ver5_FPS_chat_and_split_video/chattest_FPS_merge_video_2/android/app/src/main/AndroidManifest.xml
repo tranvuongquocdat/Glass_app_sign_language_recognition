@@ -9,7 +9,7 @@
 
 
     <application
-        android:label="DPSA Hmong"
+        android:label="DPSA 4"
         tools:replace="android:label"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
