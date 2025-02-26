@@ -182,6 +182,7 @@ flutter:
     - assets/SLR_video/english/
     - assets/SLR_video/vietnamese/
     - assets/SLR_video_segment/
+    - assets/SLR_video_segment_english/
 
 
 
