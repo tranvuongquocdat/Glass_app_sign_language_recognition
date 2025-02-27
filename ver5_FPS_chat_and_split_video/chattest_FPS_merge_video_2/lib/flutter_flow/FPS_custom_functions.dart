@@ -24,7 +24,6 @@ class VideoConstants {
     "bẩn": "assets/SLR_video_segment/baanr.mp4",
     "áo": "assets/SLR_video_segment/ao.mp4",
     "bắc cực": "assets/SLR_video_segment/bac_cuc.mp4",
-    "bạn khỏe không": "assets/SLR_video_segment/ban_khoe_khong.mp4",
     "bạn bè": "assets/SLR_video_segment/ban_be.mp4",
     "buổi chiều": "assets/SLR_video_segment/buoi_chieu.mp4",
     "bãi xe ô tô": "assets/SLR_video_segment/bai_do_xe_o_to.mp4",
@@ -36,15 +35,8 @@ class VideoConstants {
     "ảnh hưởng": "assets/SLR_video_segment/anh_huong.mp4",
     "bãi đỗ xe oto": "assets/SLR_video_segment/bai_do_xe_o_to.mp4",
     "balo": "assets/SLR_video_segment/balo.mp4",
-    "bạn bao nhiêu tuổi": "assets/SLR_video_segment/ban_bao_nhieu_tuoi.mp4",
-    "bạn có đói không": "assets/SLR_video_segment/ban_co_doi_khong.mp4",
-    "bạn có nuôi con gì không": "assets/SLR_video_segment/ban_co_nuoi_con_gi_khong.mp4",
-    "bạn có thích học tiếng anh không": "assets/SLR_video_segment/ban_co_thich_hoc_tieng_anh_khong.mp4",
-    "bản đồ Việt Nam": "assets/SLR_video_segment/ban_do_viet_nam.mp4",
-    "bạn làm nghề gì": "assets/SLR_video_segment/ban_lam_nghe_gi.mp4",
     "bàn tay": "assets/SLR_video_segment/ban_tay.mp4",
     "bạn thân": "assets/SLR_video_segment/ban_than.mp4",
-    "bạn thích ăn gì": "assets/SLR_video_segment/ban_thich_an_gi.mp4",
     "bàn": "assets/SLR_video_segment/banf.mp4",
     "băng bó": "assets/SLR_video_segment/bang_bo.mp4",
     "bảo vệ": "assets/SLR_video_segment/bao_ve.mp4",
@@ -220,7 +212,6 @@ class VideoConstants {
     "họa sĩ": "assets/SLR_video_segment/hoa_si.mp4",
     "hoán vị": "assets/SLR_video_segment/hoan_vi.mp4",
     "học bài": "assets/SLR_video_segment/hoc_bai.mp4",
-    "hôm nay thời tiết thế nào": "assets/SLR_video_segment/hom_nay_thoi_tiet_the_nao.mp4",
     "hú vía": "assets/SLR_video_segment/hu_via.mp4",
     "húc": "assets/SLR_video_segment/hucs.mp4",
     "hướng dẫn": "assets/SLR_video_segment/huong_dan.mp4",
@@ -298,7 +289,6 @@ class VideoConstants {
     "nhìn": "assets/SLR_video_segment/nhinf.mp4",
     "nho": "assets/SLR_video_segment/nho.mp4",
     "no": "assets/SLR_video_segment/no.mp4",
-    "nó có màu gì": "assets/SLR_video_segment/no_co_mau_gi.mp4",
     "nổi giận": "assets/SLR_video_segment/noi_gian.mp4",
     "nói dối": "assets/SLR_video_segment/nois_doosi.mp4",
     "nóng": "assets/SLR_video_segment/nongs.mp4",
@@ -325,7 +315,6 @@ class VideoConstants {
     "quý hiếm": "assets/SLR_video_segment/quy_hiem.mp4",
     "quy nạp": "assets/SLR_video_segment/quy_nap.mp4",
     "quỳ": "assets/SLR_video_segment/quyf.mp4",
-    "rất vui được gặp bạn": "assets/SLR_video_segment/rat_vui_duoc_gap_ban.mp4",
     "rau": "assets/SLR_video_segment/rau.mp4",
     "rau bắp cải": "assets/SLR_video_segment/rau_bap_cai.mp4",
     "rễ": "assets/SLR_video_segment/reex.mp4",
@@ -388,7 +377,6 @@ class VideoConstants {
     "tỏa hương": "assets/SLR_video_segment/toa_huong.mp4",
     "tóc": "assets/SLR_video_segment/toc.mp4",
     "tôi": "assets/SLR_video_segment/toi.mp4",
-    "tôi cũng thích chó": "assets/SLR_video_segment/toi_cung_thich_cho.mp4",
     "tổng số": "assets/SLR_video_segment/tong_so.mp4",
     "trả lời": "assets/SLR_video_segment/tra_loi.mp4",
     "trái tim": "assets/SLR_video_segment/trai_tim.mp4",
@@ -425,15 +413,31 @@ class VideoConstants {
     "xuồng": "assets/SLR_video_segment/xuong.mp4",
     "y tá": "assets/SLR_video_segment/y_ta.mp4",
     "bạn": "assets/SLR_video_segment/banj.mp4",
-    "bạn tên là gì": "assets/SLR_video_segment/ban_ten_la_gi.mp4",
     "đọc sách": "assets/SLR_video_segment/doc_sach.mp4",
-    "đồng bằng duyên hải miền Trung": "assets/SLR_video_segment/dong_bang_duyen_hai_mien_trung.mp4",
     "giúp đỡ": "assets/SLR_video_segment/giup_do.mp4",
     "học": "assets/SLR_video_segment/hocj.mp4",
     "thích": "assets/SLR_video_segment/thichs.mp4",
     "thực phẩm": "assets/SLR_video_segment/thuc_pham.mp4",
-    "bạn thích gì": "assets/SLR_video_segment/ban_thich_gi.mp4",
-    "bạn có thích học toán không": "assets/SLR_video_segment/ban_co_thich_hoc_toan_khong.mp4"
+};
+
+static const Map<String, String> VietnameseSentenceVideos = {
+  "bạn thích gì": "assets/SLR_video_segment/ban_thich_gi.mp4",
+  "bạn có thích học toán không": "assets/SLR_video_segment/ban_co_thich_hoc_toan_khong.mp4",
+  "đồng bằng duyên hải miền Trung": "assets/SLR_video_segment/dong_bang_duyen_hai_mien_trung.mp4",
+  "tôi cũng thích chó": "assets/SLR_video_segment/toi_cung_thich_cho.mp4",
+  "nó có màu gì": "assets/SLR_video_segment/no_co_mau_gi.mp4",
+  "rất vui được gặp bạn": "assets/SLR_video_segment/rat_vui_duoc_gap_ban.mp4",
+  "bạn tên là gì": "assets/SLR_video_segment/ban_ten_la_gi.mp4",
+  "bạn bao nhiêu tuổi": "assets/SLR_video_segment/ban_bao_nhieu_tuoi.mp4",
+  "bạn có đói không": "assets/SLR_video_segment/ban_co_doi_khong.mp4",
+  "bạn có nuôi con gì không": "assets/SLR_video_segment/ban_co_nuoi_con_gi_khong.mp4",
+  "bạn có thích học tiếng anh không": "assets/SLR_video_segment/ban_co_thich_hoc_tieng_anh_khong.mp4",
+  "bản đồ Việt Nam": "assets/SLR_video_segment/ban_do_viet_nam.mp4",
+  "bạn làm nghề gì": "assets/SLR_video_segment/ban_lam_nghe_gi.mp4",
+  "bạn thích ăn gì": "assets/SLR_video_segment/ban_thich_an_gi.mp4",
+  "bạn khỏe không": "assets/SLR_video_segment/ban_khoe_khong.mp4",
+  "hôm nay thời tiết thế nào": "assets/SLR_video_segment/hom_nay_thoi_tiet_the_nao.mp4",
+
 };
 
 static const Map<String, String> wordSegmentsEnglish = 
@@ -705,6 +709,26 @@ static const Map<String, String> wordSegmentsEnglish =
     "pride": "assets/SLR_video_segment_english/AI_pride.mp4",
     "printer": "assets/SLR_video_segment_english/AI_printer.mp4",
     "priority": "assets/SLR_video_segment_english/AI_priority.mp4",
+    "sleepy": "assets/SLR_video_segment_english/sleepy.mp4",
+    "sorry": "assets/SLR_video_segment_english/sorry.mp4",
+    "teacher": "assets/SLR_video_segment_english/teacher.mp4",
+    "thank you": "assets/SLR_video_segment_english/thank_you.mp4",
+    "thirsty": "assets/SLR_video_segment_english/thirsty.mp4",
+    "tired": "assets/SLR_video_segment_english/tired.mp4",
+    "parents": "assets/SLR_video_segment_english/AI_parents.mp4",
+    "paint": "assets/SLR_video_segment_english/AI_paint.mp4",
+    "out": "assets/SLR_video_segment_english/AI_out.mp4",
+    "I": "assets/SLR_video_segment_english/I.mp4"
+}
+  ;
+
+static const Map<String, String> EnglishSentenceVideos = <String, String>{
+    "what colour is it": "assets/SLR_video_segment_english/what_color_is_it.mp4",
+    "what do you like to eat": "assets/SLR_video_segment_english/what_do_you_like_to_eat.mp4",
+    "what do you want to drink": "assets/SLR_video_segment_english/what_do_you_want_to_drink.mp4",
+    "what do you work": "assets/SLR_video_segment_english/what_do_you_work.mp4",
+    "what is the weather like today": "assets/SLR_video_segment_english/what_is_the_weather_like_today.mp4",
+    "you must try the bread that my mom cooks": "assets/SLR_video_segment_english/you_must_try_the_bread_that_my_mom_cooks.mp4",
     "are you hungry": "assets/SLR_video_segment_english/are_you_hungry.mp4",
     "do you any pets": "assets/SLR_video_segment_english/do_you_have_any_pets.mp4",
     "do you have any pets": "assets/SLR_video_segment_english/do_you_have_any_pets.mp4",
@@ -718,25 +742,10 @@ static const Map<String, String> wordSegmentsEnglish =
     "let me take it for you": "assets/SLR_video_segment_english/let_me_take_it_for_you.mp4",
     "me too": "assets/SLR_video_segment_english/me_too.mp4",
     "nice to meet you": "assets/SLR_video_segment_english/nice_to_meet_you.mp4",
-    "sleepy": "assets/SLR_video_segment_english/sleepy.mp4",
-    "sorry": "assets/SLR_video_segment_english/sorry.mp4",
-    "teacher": "assets/SLR_video_segment_english/teacher.mp4",
-    "thank you": "assets/SLR_video_segment_english/thank_you.mp4",
-    "thirsty": "assets/SLR_video_segment_english/thirsty.mp4",
-    "tired": "assets/SLR_video_segment_english/tired.mp4",
-    "what colour is it": "assets/SLR_video_segment_english/what_color_is_it.mp4",
-    "what do you like to eat": "assets/SLR_video_segment_english/what_do_you_like_to_eat.mp4",
-    "what do you want to drink": "assets/SLR_video_segment_english/what_do_you_want_to_drink.mp4",
-    "what do you work": "assets/SLR_video_segment_english/what_do_you_work.mp4",
-    "what is the weather like today": "assets/SLR_video_segment_english/what_is_the_weather_like_today.mp4",
-    "you must try the bread that my mom cooks": "assets/SLR_video_segment_english/you_must_try_the_bread_that_my_mom_cooks.mp4",
-    "parents": "assets/SLR_video_segment_english/AI_parents.mp4",
-    "paint": "assets/SLR_video_segment_english/AI_paint.mp4",
-    "out": "assets/SLR_video_segment_english/AI_out.mp4",
-    "I": "assets/SLR_video_segment_english/I.mp4"
+};
 }
-  ;
-}
+
+
 
 Future<String> generateGeminiResponse(BuildContext context, String prompt) async {
   try {
@@ -776,6 +785,10 @@ Future<String> splitAndMatchText(BuildContext context, String inputText) async {
   ''';
 
   try {
+    inputText = inputText.toLowerCase().trim();
+    if (VideoConstants.VietnameseSentenceVideos.containsKey(inputText)) {
+      return 'OK|${inputText}';
+    }
     // print('Sending prompt to Gemini: $prompt');
     final response = await generateGeminiResponse(context, prompt);
     
@@ -809,6 +822,7 @@ Future<String> splitAndMatchText(BuildContext context, String inputText) async {
 }
 
 Future<String> splitAndMatchTextEnglish(BuildContext context, String inputText) async {
+  final availableSentences = VideoConstants.EnglishSentenceVideos.keys.toList();
   final availableWords = VideoConstants.wordSegmentsEnglish.keys.toList();
   final wordsListStr = availableWords.map((w) => '"$w"').join(', ');
 
@@ -832,6 +846,11 @@ Future<String> splitAndMatchTextEnglish(BuildContext context, String inputText) 
   ''';
 
   try {
+    inputText = inputText.toLowerCase().trim();
+    // Kiểm tra xem câu có trong danh sách câu không
+    if (availableSentences.contains(inputText)) {
+      return 'OK|${inputText}';
+    }
     // print('Sending prompt to Gemini: $prompt');
     final response = await generateGeminiResponse(context, prompt);
     
@@ -876,12 +895,51 @@ Future<List<String>> parseVideoPathsFromSplitText(String splitTextOutput) async 
   final videoPaths = words.map((word) {
     final trimmedWord = word.trim();
     print('Mapping word: "$trimmedWord"');
-    final path = VideoConstants.wordSegments[trimmedWord];
-    if (path == null) {
+    
+    // First check if it's a complete sentence
+    final sentencePath = VideoConstants.VietnameseSentenceVideos[trimmedWord];
+    if (sentencePath != null) {
+      return sentencePath;
+    }
+    
+    // If not a sentence, check individual words
+    final wordPath = VideoConstants.wordSegments[trimmedWord];
+    if (wordPath == null) {
       print('Video path not found for word: $trimmedWord');
       throw Exception('Video path not found for word: $trimmedWord');
     }
-    return path;
+    return wordPath;
+  }).toList();
+
+  return videoPaths;
+}
+
+Future<List<String>> parseVideoPathsFromSplitTextEnglish(String splitTextOutput) async {
+  if (!splitTextOutput.startsWith('OK|')) {
+    print('Invalid split text output: $splitTextOutput');
+    throw Exception('Invalid split text output format');
+  }
+
+  final wordsString = splitTextOutput.substring(3);
+  final words = wordsString.split(' + ');
+
+  final videoPaths = words.map((word) {
+    final trimmedWord = word.trim();
+    print('Mapping word: "$trimmedWord"');
+    
+    // First check if it's a complete sentence
+    final sentencePath = VideoConstants.EnglishSentenceVideos[trimmedWord];
+    if (sentencePath != null) {
+      return sentencePath;
+    }
+    
+    // If not a sentence, check individual words
+    final wordPath = VideoConstants.wordSegmentsEnglish[trimmedWord];
+    if (wordPath == null) {
+      print('Video path not found for word: $trimmedWord');
+      throw Exception('Video path not found for word: $trimmedWord');
+    }
+    return wordPath;
   }).toList();
 
   return videoPaths;
@@ -1112,19 +1170,5 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         ),
       ),
     );
-  }
-}
-
-// Cập nhật hàm mergeAndPlayVideos để trả về danh sách đường dẫn video
-Future<List<String>> getSignLanguageVideoPaths(String splitTextOutput) async {
-  try {
-    print('Parsing video paths from split text...');
-    if (!splitTextOutput.startsWith('OK|')) {
-      throw Exception('Invalid split text output format');
-    }
-    return await parseVideoPathsFromSplitText(splitTextOutput);
-  } catch (e) {
-    print('Error getting video paths: $e');
-    rethrow;
   }
 }

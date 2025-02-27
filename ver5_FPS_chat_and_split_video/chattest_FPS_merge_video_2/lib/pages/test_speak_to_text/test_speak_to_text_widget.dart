@@ -131,6 +131,14 @@ class _TestSpeakToTextWidgetState extends State<TestSpeakToTextWidget>
     _model.isRouteVisible = false;
   }
 
+  Future<List<String>> getSignLanguageVideoPaths(String splitOutput) async {
+    if (FFAppState().vietnameseEnable) {
+      return parseVideoPathsFromSplitText(splitOutput);
+    } else {
+      return parseVideoPathsFromSplitTextEnglish(splitOutput);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     DebugFlutterFlowModelContext.maybeOf(context)
@@ -506,10 +514,18 @@ class _TestSpeakToTextWidgetState extends State<TestSpeakToTextWidget>
                                                 });
 
                                                 try {
-                                                  final result = await splitAndMatchText(
-                                                    context,
-                                                    splitTextController!.text,
-                                                  );
+                                                  String result;
+                                                  if (FFAppState().vietnameseEnable) {
+                                                    result = await splitAndMatchText(
+                                                      context,
+                                                      splitTextController!.text,
+                                                    );
+                                                  } else {
+                                                    result = await splitAndMatchTextEnglish(
+                                                      context,
+                                                      splitTextController!.text,
+                                                    );
+                                                  }
                                                   setState(() {
                                                     splitOutput = result;
                                                   });

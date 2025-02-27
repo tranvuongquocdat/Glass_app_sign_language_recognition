@@ -869,7 +869,7 @@ class _FPSChatPageWidgetState extends State<FPSChatPageWidget>
                                                                 width: 220.0,
                                                                 height: 220.0,
                                                                 child: FutureBuilder<List<String>>(
-                                                                  future: FPS_functions.parseVideoPathsFromSplitText(chatItem),
+                                                                  future: FFAppState().vietnameseEnable ? FPS_functions.parseVideoPathsFromSplitText(chatItem) : FPS_functions.parseVideoPathsFromSplitTextEnglish(chatItem),
                                                                   builder: (context, pathsSnapshot) {
                                                                     if (pathsSnapshot.connectionState == ConnectionState.waiting) {
                                                                       return const Center(
