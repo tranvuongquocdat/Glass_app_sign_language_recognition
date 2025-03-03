@@ -418,12 +418,12 @@ class VideoConstants {
     "học": "assets/SLR_video_segment/hocj.mp4",
     "thích": "assets/SLR_video_segment/thichs.mp4",
     "thực phẩm": "assets/SLR_video_segment/thuc_pham.mp4",
+    "đồng bằng duyên hải miền trung": "assets/SLR_video_segment/dong_bang_duyen_hai_mien_trung.mp4",
 };
 
 static const Map<String, String> VietnameseSentenceVideos = {
   "bạn thích gì": "assets/SLR_video_segment/ban_thich_gi.mp4",
   "bạn có thích học toán không": "assets/SLR_video_segment/ban_co_thich_hoc_toan_khong.mp4",
-  "đồng bằng duyên hải miền Trung": "assets/SLR_video_segment/dong_bang_duyen_hai_mien_trung.mp4",
   "tôi cũng thích chó": "assets/SLR_video_segment/toi_cung_thich_cho.mp4",
   "nó có màu gì": "assets/SLR_video_segment/no_co_mau_gi.mp4",
   "rất vui được gặp bạn": "assets/SLR_video_segment/rat_vui_duoc_gap_ban.mp4",
@@ -924,7 +924,24 @@ static const Map<String, String> wordSegmentsEnglish =
     "responsible": "assets/SLR_video_segment_english/AI_responsible.mp4",
     "restaurant": "assets/SLR_video_segment_english/AI_restaurant.mp4",
     "restroom": "assets/SLR_video_segment_english/AI_restroom.mp4",
-    "result": "assets/SLR_video_segment_english/AI_result.mp4"
+    "result": "assets/SLR_video_segment_english/AI_result.mp4",
+    "name": "assets/SLR_video_segment_english/AI_name.mp4",
+    "flood": "assets/SLR_video_segment_english/AI_flood.mp4",
+    "food": "assets/SLR_video_segment_english/AI_food.mp4",
+    "sport": "assets/SLR_video_segment_english/AI_sport.mp4",
+    "is": "assets/SLR_video_segment_english/AI_is.mp4",
+    "my": "assets/SLR_video_segment_english/AI_my.mp4",
+    "do": "assets/SLR_video_segment_english/AI_do.mp4",
+    "it": "assets/SLR_video_segment_english/AI_it.mp4",
+    "about": "assets/SLR_video_segment_english/about.mp4.mp4",
+    "application": "assets/SLR_video_segment_english/application.mp4.mp4",
+    "disability": "assets/SLR_video_segment_english/disability.mp4.mp4",
+    "advanced": "assets/SLR_video_segment_english/advanced.mp4.mp4",
+    "your": "assets/SLR_video_segment_english/your.mp4.mp4",
+    "she": "assets/SLR_video_segment_english/she.mp4.mp4",
+    "don't": "assets/SLR_video_segment_english/don't.mp4.mp4",
+    "to": "assets/SLR_video_segment_english/to.mp4.mp4",
+    "early": "assets/SLR_video_segment_english/early.mp4.mp4"
 }
   ;
 
@@ -983,7 +1000,14 @@ Future<String> splitAndMatchText(BuildContext context, String inputText) async {
     4. Chỉ sử dụng các từ trong danh sách đã cho
     5. Lưu ý: Trong danh sách có cả từ đơn và từ ghép, và có một số câu hoàn chỉnh
     6. Nếu thiếu từ quan trọng, hãy chỉ ra từ đó
-    7. Ưu tiên sử dụng câu hoặc từ ghép, nếu không có mới sử dụng từ đơn.
+
+    Một số ví dụ tách từ:
+    tôi ngộ độc thực phẩm: tôi + ngộ độc + thực phẩm
+    tôi thích học môn toán: tôi + thích + học + môn toán
+    học bài hình chóp tam giác cụt nằm trong mặt phẳng nhé: học bài + hình chóp tam giác cụt + nằm trong mặt phẳng
+    đồng bằng duyên hải miền trung bị lũ lụt bởi mưa rào: đồng bằng duyên hải miền trung + lũ lụt + mưa rào
+    bạn giúp đỡ đồng bào thực phẩm nhé: bạn + giúp đỡ + đồng bào + thực phẩm
+
     
     Trả về kết quả dạng:
     - Nếu đủ từ: "OK|từ1 + từ2 + từ3"
@@ -995,9 +1019,9 @@ Future<String> splitAndMatchText(BuildContext context, String inputText) async {
     if (VideoConstants.VietnameseSentenceVideos.containsKey(inputText)) {
       return 'OK|${inputText}';
     }
-    // print('Sending prompt to Gemini: $prompt');
+    print('Sending Vietnamese prompt to Gemini: $prompt');
     final response = await generateGeminiResponse(context, prompt);
-    
+    print('Response from Gemini: $response');
     // Thêm bước kiểm tra từ
     if (response.startsWith('OK|')) {
       final words = response.substring(3).split(' + ');
@@ -1044,7 +1068,18 @@ Future<String> splitAndMatchTextEnglish(BuildContext context, String inputText) 
     4. Use only the words from the provided list
     5. Note: The list includes both single words and compound words, as well as some complete sentences (e.g., "North Pole", "affect", "what do you do for a living")
     6. If a key word is missing, indicate it
-    7. Prioritize using complete sentences or compound words; use single words only if necessary
+
+    Some examples:
+    My advanced application can help disabled people: my, advanced, application, can, help, disabled, people
+    it helps you talk with everyone :it, help, you, talk, with, everyone
+    What do you do to stay healthy: what, do, you, do, to, stay, healthy
+    I hit gym and have healthy diet: I, hit, gym, healthy, diet
+    I eat egg and salad: I, eat, egg, salad
+    What is your favourite activity: what, is, your, favourite, activity
+    I like playing soccer: I, like, play, soccer
+    I play it everyday: I, play, it, everyday
+    I like learning math: I, like, learn, math
+
 
     Return the result in this format:
     - If all words are available: "OK|word1 + word2 + word3" (words separated by " + ")
@@ -1057,8 +1092,9 @@ Future<String> splitAndMatchTextEnglish(BuildContext context, String inputText) 
     if (availableSentences.contains(inputText)) {
       return 'OK|${inputText}';
     }
-    // print('Sending prompt to Gemini: $prompt');
+    print('Sending prompt to Gemini: $prompt');
     final response = await generateGeminiResponse(context, prompt);
+    print('Response from Gemini: $response');
     
     // Thêm bước kiểm tra từ
     if (response.startsWith('OK|')) {
@@ -1068,7 +1104,7 @@ Future<String> splitAndMatchTextEnglish(BuildContext context, String inputText) 
       // Kiểm tra từng từ có trong danh sách không
       for (final word in words) {
         final trimmedWord = word.trim();
-        if (!VideoConstants.wordSegments.containsKey(trimmedWord)) {
+        if (!VideoConstants.wordSegmentsEnglish.containsKey(trimmedWord)) {
           missingWords.add(trimmedWord);
         }
       }
