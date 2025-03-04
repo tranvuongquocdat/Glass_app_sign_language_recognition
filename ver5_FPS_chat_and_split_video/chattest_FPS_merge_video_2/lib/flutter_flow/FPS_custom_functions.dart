@@ -935,13 +935,17 @@ static const Map<String, String> wordSegmentsEnglish =
     "it": "assets/SLR_video_segment_english/AI_it.mp4",
     "about": "assets/SLR_video_segment_english/about.mp4.mp4",
     "application": "assets/SLR_video_segment_english/application.mp4.mp4",
-    "disability": "assets/SLR_video_segment_english/disability.mp4.mp4",
-    "advanced": "assets/SLR_video_segment_english/advanced.mp4.mp4",
     "your": "assets/SLR_video_segment_english/your.mp4.mp4",
     "she": "assets/SLR_video_segment_english/she.mp4.mp4",
     "don't": "assets/SLR_video_segment_english/don't.mp4.mp4",
     "to": "assets/SLR_video_segment_english/to.mp4.mp4",
-    "early": "assets/SLR_video_segment_english/early.mp4.mp4"
+    "early": "assets/SLR_video_segment_english/early.mp4.mp4",
+    "specifically": "assets/SLR_video_segment_english/specifically.mp4.mp4",
+    "advance": "assets/SLR_video_segment_english/advanced.mp4.mp4",
+    "disable": "assets/SLR_video_segment_english/disability.mp4.mp4",
+    "have": "assets/SLR_video_segment_english/20250304080009-smilling_face,_happy_expression,_estatic.mp4",
+    "deaf": "assets/SLR_video_segment_english/20250304104523-smilling_face,_happy_expression,_estatic.mp4",
+    "support": "assets/SLR_video_segment_english/20250304111809-smilling_face,_happy_expression,_estatic.mp4"
 }
   ;
 
@@ -1079,6 +1083,7 @@ Future<String> splitAndMatchTextEnglish(BuildContext context, String inputText) 
     I like playing soccer: I, like, play, soccer
     I play it everyday: I, play, it, everyday
     I like learning math: I, like, learn, math
+    my advance application can support disable people: my, advance, application, can, support, disable, people
 
 
     Return the result in this format:
