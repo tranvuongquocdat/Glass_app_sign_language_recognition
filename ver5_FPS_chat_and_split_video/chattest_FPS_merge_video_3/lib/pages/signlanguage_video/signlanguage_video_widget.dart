@@ -33,18 +33,14 @@ class _SignlanguageVideoWidgetState extends State<SignlanguageVideoWidget>
     'vi': {
       'search': 'Tìm kiếm...',
       'results': 'Tìm thấy',
-      'vietnameseWords': 'Từ Tiếng Việt',
-      'vietnameseSentences': 'Câu Tiếng Việt',
-      'englishWords': 'Từ Tiếng Anh',
-      'englishSentences': 'Câu Tiếng Anh',
+      'vietnamese': 'Tiếng Việt',
+      'english': 'Tiếng Anh',
     },
     'en': {
       'search': 'Search...',
       'results': 'Found',
-      'vietnameseWords': 'Vietnamese Words',
-      'vietnameseSentences': 'Vietnamese Sentences',
-      'englishWords': 'English Words',
-      'englishSentences': 'English Sentences',
+      'vietnamese': 'Vietnamese',
+      'english': 'English',
     },
   };
 
@@ -202,7 +198,7 @@ class _SignlanguageVideoWidgetState extends State<SignlanguageVideoWidget>
               ),
               Expanded(
                 child: DefaultTabController(
-                  length: 4,
+                  length: 2,
                   child: Column(
                     children: [
                       Padding(
@@ -224,53 +220,51 @@ class _SignlanguageVideoWidgetState extends State<SignlanguageVideoWidget>
                         ),
                       ),
                       TabBar(
-                        isScrollable: true,
-                        tabAlignment: TabAlignment.start,
+                        isScrollable: false,
+                        labelPadding: EdgeInsets.zero,
                         labelStyle: FlutterFlowTheme.of(context).bodyMedium.override(
                           fontFamily: 'Inter',
-                          fontSize: 14.0,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                         tabs: [
-                          _buildTab(getLabel('vietnameseWords'), 
-                            functions.VideoConstants.wordSegments.length),
-                          _buildTab(getLabel('vietnameseSentences'), 
-                            functions.VideoConstants.VietnameseSentenceVideos.length),
-                          _buildTab(getLabel('englishWords'), 
-                            functions.VideoConstants.wordSegmentsEnglish.length),
-                          _buildTab(getLabel('englishSentences'), 
-                            functions.VideoConstants.EnglishSentenceVideos.length),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: _buildTab(
+                              getLabel('vietnamese'),
+                              functions.VideoConstants.wordSegments.length +
+                                  functions.VideoConstants.VietnameseSentenceVideos.length
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: _buildTab(
+                              getLabel('english'),
+                              functions.VideoConstants.wordSegmentsEnglish.length +
+                                  functions.VideoConstants.EnglishSentenceVideos.length
+                            ),
+                          ),
                         ],
                         labelColor: FlutterFlowTheme.of(context).primaryText,
                         unselectedLabelColor: FlutterFlowTheme.of(context).secondaryText,
                         indicatorSize: TabBarIndicatorSize.tab,
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
                       ),
                       Expanded(
                         child: TabBarView(
                           children: [
-                            _buildVideoGrid(
-                              functions.VideoConstants.wordSegments.entries
-                                  .map((e) => VideoItem(title: e.key, path: e.value))
-                                  .toList(),
-                            ),
+                            _buildVideoGrid([
+                              ...functions.VideoConstants.wordSegments.entries
+                                  .map((e) => VideoItem(title: e.key, path: e.value)),
+                              ...functions.VideoConstants.VietnameseSentenceVideos.entries
+                                  .map((e) => VideoItem(title: e.key, path: e.value)),
+                            ].toList()),
                             
-                            _buildVideoGrid(
-                              functions.VideoConstants.VietnameseSentenceVideos.entries
-                                  .map((e) => VideoItem(title: e.key, path: e.value))
-                                  .toList(),
-                            ),
-                            
-                            _buildVideoGrid(
-                              functions.VideoConstants.wordSegmentsEnglish.entries
-                                  .map((e) => VideoItem(title: e.key, path: e.value))
-                                  .toList(),
-                            ),
-                            
-                            _buildVideoGrid(
-                              functions.VideoConstants.EnglishSentenceVideos.entries
-                                  .map((e) => VideoItem(title: e.key, path: e.value))
-                                  .toList(),
-                            ),
+                            _buildVideoGrid([
+                              ...functions.VideoConstants.wordSegmentsEnglish.entries
+                                  .map((e) => VideoItem(title: e.key, path: e.value)),
+                              ...functions.VideoConstants.EnglishSentenceVideos.entries
+                                  .map((e) => VideoItem(title: e.key, path: e.value)),
+                            ].toList()),
                           ],
                         ),
                       ),
